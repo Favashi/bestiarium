@@ -214,7 +214,8 @@ h2.view-title {
 .thumb > * { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
 
 /* ---------- Editor ---------- */
-.editor { display: grid; grid-template-columns: minmax(340px, 560px) 1fr; gap: 32px; align-items: start; }
+.editor { display: grid; grid-template-columns: minmax(340px, 560px) minmax(0, 1fr); gap: 32px; align-items: start; }
+.editor > * { min-width: 0; } /* la vista previa no debe ensanchar su columna (bucle de redimensionado) */
 .editor-form { display: flex; flex-direction: column; gap: 22px; }
 
 /* Recuadro de módulo: borde doble de tinta */
@@ -478,3 +479,17 @@ h2.view-title::after, .deck-head h2::after {
   .tut-nav { margin-left: 0; }
   .tut-nav .btn { flex: 1; }
 }
+
+/* Enlaces a otras apps */
+.app-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.app-link {
+  display: flex; flex-direction: column; gap: 6px; padding: 14px 16px;
+  border: 2px solid var(--ink); background: var(--sheet); color: var(--ink); text-decoration: none;
+  box-shadow: 3px 3px 0 var(--ink); transition: transform .06s, box-shadow .06s, background .12s;
+}
+.app-link:hover { background: #f2f2f2; }
+.app-link:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+.app-name { font-family: var(--font-gothic); font-size: 26px; line-height: 1; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.app-arrow { font-family: var(--font-body); font-size: 18px; }
+.app-text { font-size: 14px; line-height: 1.45; color: var(--ink-soft); }
+#apps { scroll-margin-top: 110px; }

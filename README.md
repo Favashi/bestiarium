@@ -110,6 +110,13 @@ docs/                   Capturas para este README
 }
 ```
 
+## Otras herramientas del autor
+
+- [OSR Manager](https://favashi.github.io/osr-manager/): utilidades de mesa para directores de juego OSR (exploración,
+  hexcrawl, encuentros, combate y recursos).
+- [Escriba de la Marca](https://favashi.github.io/escribadelamarca/): biblioteca de bolsillo para coleccionistas de
+  *Aventuras en la Marca del Este*.
+
 ## Licencia
 
 - **Código:** [MIT](LICENSE).

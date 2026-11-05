@@ -1,7 +1,7 @@
 import { CREDITS } from '../credits.js';
 import { h } from '../ui.js';
 
-export function creditsView(root) {
+export function creditsView(root, { focusApps = false } = {}) {
   const c = CREDITS;
   const section = (title, ...children) => h('section', { class: 'group' }, h('header', {}, h('h3', {}, title)), children);
   const row = (label, ...value) => [h('dt', {}, label), h('dd', {}, value)];
@@ -9,6 +9,11 @@ export function creditsView(root) {
   root.append(h('div', { class: 'credits' },
     h('h2', { class: 'view-title' }, 'Créditos'),
     h('p', { class: 'lead' }, h('b', {}, c.app), ` · versión ${c.version} · © ${c.year} ${c.author}`),
+
+    c.apps && c.apps.length ? h('section', { class: 'group', id: 'apps' }, h('header', {}, h('h3', {}, 'Más herramientas para el DJ')),
+      h('div', { class: 'app-links' }, c.apps.map(a => h('a', { class: 'app-link', href: a.url, target: '_blank', rel: 'noopener' },
+        h('span', { class: 'app-name' }, a.name, h('span', { class: 'app-arrow', 'aria-hidden': 'true' }, '↗')),
+        h('span', { class: 'app-text' }, a.text))))) : null,
 
     section('Autoría',
       h('dl', {},
@@ -33,4 +38,5 @@ export function creditsView(root) {
 
     section('Ejemplos',
       h('p', {}, 'Las estadísticas de los monstruos de ejemplo son mecánicas genéricas B/X; las descripciones son originales.'))));
+  if (focusApps) requestAnimationFrame(() => document.getElementById('apps')?.scrollIntoView({ block: 'start' }));
 }

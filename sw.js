@@ -1,6 +1,6 @@
 // Service worker: precachea la app para que funcione sin conexión.
 // Cambia VERSION cada vez que publiques cambios para forzar la actualización.
-const VERSION = 'v13';
+const VERSION = 'v15';
 const CACHE = `bestiario-${VERSION}`;
 
 const ASSETS = [

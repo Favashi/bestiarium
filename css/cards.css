@@ -84,6 +84,7 @@
 .card-front .portrait { position: relative; min-height: 0; display: flex; }
 .card-front .pimg { position: relative; flex: 1; min-width: 0; overflow: hidden; }
 .card-front .pimg img {
+  position: absolute; inset: 0; /* el tamaño real de la imagen no altera la rejilla */
   display: block; width: 100%; height: 100%; object-fit: contain;
   filter: grayscale(1) contrast(1.15); user-select: none;
 }

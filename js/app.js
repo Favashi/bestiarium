@@ -18,6 +18,7 @@ const routes = [
   { re: /^#\/print$/, nav: 'print', fn: () => printView(view) },
   { re: /^#\/settings$/, nav: 'settings', fn: () => settingsView(view) },
   { re: /^#\/credits$/, nav: 'credits', fn: () => creditsView(view) },
+  { re: /^#\/apps$/, nav: 'credits', fn: () => creditsView(view, { focusApps: true }) },
 ];
 
 async function route() {

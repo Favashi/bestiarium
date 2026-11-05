@@ -129,8 +129,19 @@ export async function editorView(root, id) {
       if (!file) return;
       try { m.image = await fileToDataURL(file, 1000); changed(true); } catch (e) { toast(e.message); }
     };
+    // Las barras solo recolocan la ilustración ya dibujada: sin redibujar ni reajustar la carta
     const slider = (label, key, min, max, step) => field(label, h('input', { type: 'range', min, max, step, value: m[key],
-      oninput: e => { m[key] = Number(e.target.value); changed(); } }));
+      oninput: e => {
+        m[key] = Number(e.target.value);
+        savedEl.textContent = 'Guardando…';
+        save();
+        const x = m.imageX ?? 50, y = m.imageY ?? 50, z = m.imageZoom ?? 1;
+        preview.querySelectorAll('.portrait img').forEach(img => {
+          img.style.objectPosition = `${x}% ${y}%`;
+          img.style.transformOrigin = `${x}% ${y}%`;
+          img.style.transform = `scale(${z})`;
+        });
+      } }));
 
     return group('Identidad', null,
       h('div', { class: 'grid2' },
