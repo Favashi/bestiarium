@@ -38,12 +38,15 @@ export async function libraryView(root) {
 
   // ---------- pestañas de mazos ----------
   function renderTabs() {
-    const tab = (id, label, count) => h('button', { type: 'button', class: `deck-tab${state.deckFilter === id ? ' on' : ''}`,
-      onclick: () => { state.deckFilter = id; state.selection.clear(); selecting = false; render(); } },
-      h('span', {}, label), h('small', {}, String(count)));
+    const tab = (id, label, count, deck = null) => h('div', { class: `deck-tab${state.deckFilter === id ? ' on' : ''}` },
+      h('button', { type: 'button', class: 'deck-tab-main',
+        onclick: () => { state.deckFilter = id; state.selection.clear(); selecting = false; render(); } },
+        h('span', {}, label), h('small', {}, String(count))),
+      deck ? h('button', { type: 'button', class: 'deck-tab-x', title: `Eliminar el mazo ${deck.name}`, 'aria-label': `Eliminar el mazo ${deck.name}`,
+        onclick: () => deleteDeck(deck) }, '✕') : null);
     tabs.replaceChildren(
       tab('', 'Todos', cards.length),
-      ...decks.map(d => tab(d.id, d.name, totalCards(d))),
+      ...decks.map(d => tab(d.id, d.name, totalCards(d), d)),
       h('button', { type: 'button', class: 'deck-tab add', onclick: createDeck }, '+ Nuevo mazo'));
   }
 
@@ -74,14 +77,74 @@ export async function libraryView(root) {
           const name = await askText('Renombrar mazo', 'Nombre', deck.name, 'Guardar');
           if (name) { deck.name = name; await persistDecks(); }
         } }, 'Renombrar'),
-        h('button', { class: 'btn small danger', onclick: async () => {
-          const ok = await confirmDialog('Eliminar mazo', `Se eliminará el mazo «${deck.name}». Los monstruos seguirán en tu bestiario.`, 'Eliminar mazo');
-          if (!ok) return;
-          decks = decks.filter(d => d !== deck);
-          state.deckFilter = '';
-          await persistDecks();
-          toast('Mazo eliminado');
-        } }, 'Eliminar mazo'))));
+        h('button', { class: 'btn small danger', onclick: () => deleteDeck(deck) }, 'Eliminar mazo'))));
+  }
+
+  /** Elimina un mazo; opcionalmente borra también los monstruos que solo estaban en él. */
+  async function deleteDeck(deck) {
+    const only = deck.entries.map(e => e.id).filter(id => !decks.some(d => d !== deck && countIn(d, id)));
+    let alsoMonsters = false;
+    const ok = await dialog({
+      title: 'Eliminar mazo',
+      build: body => {
+        body.append(h('p', {}, `Se eliminará el mazo «${deck.name}» (${deck.entries.length} monstruo${deck.entries.length === 1 ? '' : 's'}, ${totalCards(deck)} carta${totalCards(deck) === 1 ? '' : 's'}).`));
+        if (only.length) {
+          body.append(
+            h('label', { class: 'check' }, h('input', { type: 'checkbox', onchange: e => { alsoMonsters = e.target.checked; } }),
+              only.length === 1 ? 'Borrar también del bestiario el monstruo que solo está en este mazo'
+                : `Borrar también del bestiario los ${only.length} monstruos que solo están en este mazo`),
+            h('p', { class: 'hint' }, 'Si no lo marcas, los monstruos seguirán en «Todos». Borrarlos no se puede deshacer.'));
+        } else {
+          body.append(h('p', { class: 'hint' }, 'Los monstruos seguirán en tu bestiario.'));
+        }
+      },
+      actions: [{ label: 'Cancelar', value: false }, { label: 'Eliminar mazo', danger: true, value: true }],
+    });
+    if (!ok) return;
+    decks = decks.filter(d => d !== deck);
+    await saveDecks(decks);
+    if (alsoMonsters && only.length) {
+      for (const id of only) await deleteCard(id);
+      only.forEach(id => state.selection.delete(id));
+    }
+    if (state.deckFilter === deck.id) state.deckFilter = '';
+    toast(alsoMonsters && only.length ? `Mazo y ${only.length} monstruo(s) borrados` : 'Mazo eliminado');
+    await reload();
+  }
+
+  /** Papelera de una carta: en un mazo permite quitarla o borrarla; en «Todos», borrarla. */
+  async function deleteOne(m) {
+    const deck = currentDeck();
+    const inDecks = decks.filter(d => countIn(d, m.id));
+    const where = !inDecks.length ? ''
+      : inDecks.length === 1 ? ' También desaparecerá del mazo en el que está.'
+        : ` También desaparecerá de los ${inDecks.length} mazos en los que está.`;
+    const choice = await dialog({
+      title: deck ? 'Quitar o borrar' : 'Borrar monstruo',
+      build: body => {
+        body.append(h('p', {}, deck
+          ? `¿Qué quieres hacer con «${m.name}»?`
+          : `Se borrará «${m.name}» del bestiario.${where}`));
+        if (deck) body.append(h('ul', { class: 'dlg-list' },
+          h('li', {}, h('b', {}, 'Quitar del mazo: '), `deja de estar en «${deck.name}», pero sigue en tu bestiario.`),
+          h('li', {}, h('b', {}, 'Borrar del bestiario: '), `elimina el monstruo para siempre.${where}`)));
+        body.append(h('p', { class: 'hint' }, 'Borrar no se puede deshacer. Si dudas, exporta antes una copia desde Ajustes.'));
+      },
+      actions: deck
+        ? [{ label: 'Cancelar', value: null }, { label: 'Quitar del mazo', value: 'remove' }, { label: 'Borrar del bestiario', danger: true, value: 'delete' }]
+        : [{ label: 'Cancelar', value: null }, { label: 'Borrar', danger: true, value: 'delete' }],
+    });
+    if (choice === 'remove') {
+      setCount(deck, m.id, 0);
+      await persistDecks();
+      toast(`«${m.name}» quitado de «${deck.name}»`);
+    } else if (choice === 'delete') {
+      await deleteCard(m.id);
+      await purgeMonsters([m.id]);
+      state.selection.delete(m.id);
+      toast(`«${m.name}» borrado`);
+      await reload();
+    }
   }
 
   // ---------- diálogos ----------
@@ -169,6 +232,8 @@ export async function libraryView(root) {
     const inDecks = decks.filter(d => countIn(d, m.id));
     const el = h('div', { class: `tile${picked ? ' picked' : ''}` },
       h('button', { class: 'pick', 'aria-label': 'Seleccionar', onclick: e => { e.stopPropagation(); togglePick(m.id); } }, picked ? '✓' : ''),
+      h('button', { type: 'button', class: 'tile-del', title: deck ? 'Quitar o borrar' : 'Borrar', 'aria-label': `${deck ? 'Quitar o borrar' : 'Borrar'} ${m.name}`,
+        html: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>', onclick: e => { e.stopPropagation(); deleteOne(m); } }),
       thumb,
       h('div', { class: 'tile-meta' }, h('span', { class: 'name', title: m.name }, m.name), h('span', { class: 'muted' }, m.hd ? `DG ${m.hd}` : '')),
       deck

@@ -493,3 +493,33 @@ h2.view-title::after, .deck-head h2::after {
 .app-arrow { font-family: var(--font-body); font-size: 18px; }
 .app-text { font-size: 14px; line-height: 1.45; color: var(--ink-soft); }
 #apps { scroll-margin-top: 110px; }
+
+/* Papelera de cada carta */
+.tile .tile-del {
+  position: absolute; top: 8px; right: 8px; z-index: 2;
+  width: 32px; height: 32px; padding: 0; display: grid; place-items: center; cursor: pointer;
+  background: var(--sheet); color: var(--ink); border: 2px solid var(--ink); border-radius: 2px; box-shadow: 2px 2px 0 var(--ink);
+  opacity: .9; transition: opacity .12s, background .12s, color .12s;
+}
+.tile .tile-del svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.tile .tile-del:hover, .tile .tile-del:focus-visible { background: var(--ink); color: #fff; opacity: 1; }
+@media (hover: hover) {
+  .tile .tile-del { opacity: 0; }
+  .tile:hover .tile-del, .tile .tile-del:focus-visible { opacity: 1; }
+}
+.selecting .tile .tile-del { display: none; }
+
+/* Pestañas de mazo con botón de eliminar */
+.deck-tab { padding: 0; align-items: stretch; gap: 0; }
+.deck-tab-main {
+  display: inline-flex; align-items: baseline; gap: 8px; padding: 7px 14px 6px;
+  background: none; border: 0; color: inherit; cursor: pointer; font: inherit; letter-spacing: inherit; text-transform: inherit;
+}
+.deck-tab-x {
+  background: none; border: 0; border-left: 1.5px solid currentColor; color: inherit; cursor: pointer;
+  padding: 0 9px; font-size: 13px; opacity: .55;
+}
+.deck-tab-x:hover, .deck-tab-x:focus-visible { opacity: 1; background: rgba(0,0,0,.08); }
+.deck-tab.on .deck-tab-x:hover { background: rgba(255,255,255,.15); }
+.deck-tab.add { padding: 7px 14px 6px; }
+.dlg-list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
