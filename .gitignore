@@ -1,0 +1,17 @@
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/
+.idea/
+*.swp
+
+# Dependencias y artefactos (la app no los necesita, pero por si acaso)
+node_modules/
+*.log
+dist/
+
+# Copias de seguridad exportadas desde la app
+bestiarium-*.json
+monstruos-*.json

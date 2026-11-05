@@ -1,0 +1,36 @@
+/* Hojas de impresión. Las páginas se dibujan a tamaño real (mm) y en pantalla se escalan. */
+.sheet {
+  position: relative;
+  width: var(--pw);
+  height: var(--ph);
+  background: #fff;
+  overflow: hidden;
+}
+.sheet-grid {
+  position: absolute;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), var(--cw));
+  grid-auto-rows: var(--ch);
+  gap: var(--gap);
+}
+.slot { position: relative; width: var(--cw); height: var(--ch); }
+.slot .card { border-radius: var(--card-radius, 3mm); }
+.slot.rot180 .card { transform: rotate(180deg); }
+.sheet.cutmarks .slot::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 2;
+  outline: .1mm dashed rgba(0,0,0,.35);
+}
+.sheet.square .slot .card { border-radius: 0; }
+
+@media print {
+  html, body { background: #fff !important; margin: 0 !important; display: block !important; }
+  .topbar, .toast, .print-options, .page-label, .no-print, .site-foot { display: none !important; }
+  main { padding: 0 !important; max-width: none !important; }
+  .print-layout { display: block !important; }
+  .print-preview { display: block !important; gap: 0 !important; }
+  .page-wrap { display: block !important; gap: 0 !important; }
+  .page-wrap .thumb { width: auto !important; height: auto !important; overflow: visible !important; box-shadow: none !important; }
+  .page-wrap .thumb > .sheet { position: static !important; transform: none !important; }
+  .sheet { break-after: page; page-break-after: always; }
+  .page-wrap:last-child .sheet { break-after: auto; page-break-after: auto; }
+}

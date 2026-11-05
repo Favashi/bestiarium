@@ -1,0 +1,169 @@
+/* Carta de monstruo — tarot, blanco y negro, estilo old-school.
+   Motivo común: doble filete (grueso + fino) y rombos, en marco, títulos y separadores. */
+.card {
+  --fs: 8pt;
+  --pad: 3.5mm;
+  --rule: .45mm;
+  position: relative;
+  width: var(--w);
+  height: var(--h);
+  box-sizing: border-box;
+  overflow: hidden;
+  background: #fff;
+  color: #111;
+  font-family: "Jost", "Futura", system-ui, sans-serif;
+  border-radius: 3.5mm;
+  padding: var(--pad);
+  container-type: size;
+  display: flex;
+  flex-direction: column;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.card *, .card *::before, .card *::after { box-sizing: border-box; }
+.card h1, .card h2, .card h3, .card p, .card dl, .card dd { margin: 0; }
+.card.overflow::after {
+  content: "texto desbordado";
+  position: absolute; right: 2mm; bottom: 1.5mm; z-index: 5;
+  font: 700 5.5pt system-ui, sans-serif; color: #fff; background: #c0392b;
+  padding: .3mm 1.2mm; border-radius: 1mm;
+}
+
+/* ---------- Títulos de sección: versalitas + doble filete ---------- */
+.card .sec {
+  font-family: "Oswald", "Impact", sans-serif; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .07em; line-height: 1.1;
+  padding-bottom: .8mm;
+  border-bottom: var(--rule) solid #111;
+  /* filete fino sobre el grueso */
+  background: linear-gradient(to top, transparent .3mm, #111 .3mm, #111 .5mm, transparent .5mm) bottom / 100% .5mm no-repeat;
+  margin-bottom: 1.2mm;
+}
+
+/* ---------- Nombre: centrado, doble filete con rombo central ---------- */
+.card .title, .card .back-head {
+  flex: none; position: relative; text-align: center;
+  padding: 1.2mm 0 2.6mm;
+  border-bottom: .7mm solid #111;
+  background: linear-gradient(to top, transparent .4mm, #111 .4mm, #111 .65mm, transparent .65mm) bottom / 100% .65mm no-repeat;
+  margin-bottom: 2.6mm;
+}
+.card .title::after, .card .back-head::after {
+  content: ""; position: absolute; left: 50%; bottom: -1.05mm;
+  width: 2.1mm; height: 2.1mm; margin-left: -1.05mm;
+  transform: rotate(45deg);
+  background: #111; border: .45mm solid #111; box-shadow: inset 0 0 0 .4mm #fff;
+}
+.card .title p, .card .back-head p { font-size: 3.5cqw; line-height: 1.2; letter-spacing: .02em; }
+.card .title h1, .card .back-head h2 {
+  font-family: "Oswald", "Impact", sans-serif; font-weight: 700;
+  font-size: 9.5cqw; line-height: 1; text-transform: uppercase; letter-spacing: .015em;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Anverso ---------- */
+.card-front .top {
+  flex: none;
+  height: 38.5cqh;
+  display: grid;
+  grid-template-columns: 31% 1fr 28%;
+  column-gap: 2.4mm;
+}
+.card-front .top .sec { font-size: 3.7cqw; margin-bottom: 1mm; }
+.card-front dl { margin-bottom: 1.6mm; }
+.card-front dl > div { display: flex; justify-content: space-between; gap: 1mm; font-size: 3.85cqw; line-height: 1.18; }
+.card-front dt { font-weight: 700; flex: none; }
+.card-front dd { text-align: right; min-width: 0; overflow-wrap: anywhere; }
+.card-front .col-left, .card-front .col-right { overflow: hidden; padding-top: .8mm; }
+.card-front .saves > div, .card-front .enc > div { justify-content: flex-start; }
+.card-front .saves dt { width: 4cqw; }
+.card-front .enc dt { width: 8.5cqw; }
+.card-front .enc dd { text-align: left; }
+.card-front .save-as { font-size: 3.2cqw; font-style: italic; margin: -1mm 0 1.6mm; }
+
+.card-front .portrait { position: relative; min-height: 0; display: flex; }
+.card-front .pimg { position: relative; flex: 1; min-width: 0; overflow: hidden; }
+.card-front .pimg img {
+  display: block; width: 100%; height: 100%; object-fit: contain;
+  filter: grayscale(1) contrast(1.15); user-select: none;
+}
+.card-front .ph {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  border: .3mm dashed #aaa; border-radius: 1mm;
+  background: repeating-linear-gradient(135deg, #fff 0 1.2mm, #f1f1f1 1.2mm 1.6mm);
+}
+.card-front .ph span {
+  font-family: "Oswald", sans-serif; font-weight: 700; font-size: 24cqw;
+  color: #fff; -webkit-text-stroke: .35mm #bbb;
+}
+
+/* Marco OSR: filete grueso exterior, filete fino interior, cantoneras y rombos a mitad de lado */
+.card-front .portrait.framed { --o: 1.3mm; --ow: .55mm; padding: 3mm; }
+.card-front .portrait.framed::before {
+  content: ""; position: absolute; inset: var(--o); pointer-events: none;
+  border: var(--ow) solid #111;
+}
+.card-front .portrait.framed::after {
+  content: ""; position: absolute; inset: calc(var(--o) + .85mm); pointer-events: none;
+  border: .18mm solid #111;
+}
+.card-front .portrait.framed .ph { border: 0; border-radius: 0; }
+.card-front .orn { position: absolute; z-index: 2; display: block; line-height: 0; }
+.card-front .orn svg { display: block; width: 100%; height: 100%; }
+.card-front .orn.corner { --s: 3.3mm; width: var(--s); height: var(--s); }
+.card-front .orn.mid { --s: 2.6mm; width: var(--s); height: var(--s); }
+/* centra cada ornamento sobre la línea media del filete exterior */
+.card-front .orn { --c: calc(var(--o) + var(--ow) / 2 - var(--s) / 2); }
+.card-front .orn.tl { top: var(--c); left: var(--c); }
+.card-front .orn.tr { top: var(--c); right: var(--c); }
+.card-front .orn.bl { bottom: var(--c); left: var(--c); }
+.card-front .orn.br { bottom: var(--c); right: var(--c); }
+.card-front .orn.t { top: var(--c); left: calc(50% - var(--s) / 2); }
+.card-front .orn.b { bottom: var(--c); left: calc(50% - var(--s) / 2); }
+.card-front .orn.l { left: var(--c); top: calc(50% - var(--s) / 2); }
+.card-front .orn.r { right: var(--c); top: calc(50% - var(--s) / 2); }
+
+.card .body, .card .back-body {
+  flex: 1; min-height: 0; overflow: hidden;
+  font-size: var(--fs); line-height: 1.26;
+  text-align: justify; hyphens: auto;
+}
+.card .body .sec, .card .back-body .sec { font-size: 1.05em; text-align: left; }
+.card .body section, .card .back-body section { margin-top: .8em; }
+.card .body > :first-child, .card .back-body > :first-child { margin-top: 0; }
+.card .entry { margin-bottom: .35em; }
+.card .entry b { font-weight: 700; }
+
+/* Ataques: una fila por ataque, daño destacado a la derecha */
+.card .attacks .atk {
+  display: flex; align-items: center; gap: 1.5mm;
+  padding: .35em 0 .35em 1.1em; position: relative;
+  border-bottom: .15mm dotted #777;
+  text-align: left;
+}
+.card .attacks .atk:last-child { border-bottom: 0; }
+.card .attacks .atk::before {
+  content: ""; position: absolute; left: .15em; top: 50%;
+  width: .42em; height: .42em; margin-top: -.21em; background: #111; transform: rotate(45deg);
+}
+.card .attacks .atk-what { flex: 1; min-width: 0; font-weight: 600; }
+.card .attacks .atk-dmg {
+  flex: none; font-family: "Oswald", "Impact", sans-serif; font-weight: 700; font-size: 1.12em; line-height: 1;
+  padding: .18em .5em .22em; border: .3mm solid #111; border-radius: .6mm; letter-spacing: .02em;
+}
+.card .back-body p + p { margin-top: .45em; }
+
+/* Casillas de PG: bloques por criatura en 1–3 columnas, casillas agrupadas de 5 en 5.
+   Las medidas coinciden con HP en render.js (cálculo de columnas). */
+.card .hp-track { flex: none; margin-bottom: 3.2mm; }
+.card .hp-track .sec { font-size: 3.4cqw; margin-bottom: 1.2mm; }
+.card .hp-track .sec small { font-family: "Jost", sans-serif; font-weight: 400; text-transform: none; letter-spacing: 0; font-size: .9em; }
+.card .hp-grid { display: grid; grid-template-columns: repeat(var(--hp-cols), minmax(0, 1fr)); column-gap: 3mm; row-gap: 1.4mm; }
+.card .hp-row { display: flex; align-items: flex-start; gap: 1mm; min-width: 0; }
+.card .hp-n { font: 700 3mm/3mm "Oswald", sans-serif; width: 3.2mm; text-align: right; flex: none; }
+.card .hp-boxes { display: flex; flex-wrap: wrap; gap: .9mm 1.6mm; min-width: 0; }
+.card .hp-boxes .grp { display: flex; gap: .6mm; }
+.card .hp-boxes i { display: block; width: 3mm; height: 3mm; border: .25mm solid #111; border-radius: .3mm; }
+
+/* ---------- Reverso ---------- */
+.card-back .back-head h2 { font-size: 8cqw; }
