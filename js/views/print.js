@@ -5,6 +5,7 @@ import { fitWhenReady } from '../fit.js';
 import { h, scaled, watchScale } from '../ui.js';
 import { state } from '../state.js';
 import { getDecks, countIn } from '../decks.js';
+import { track } from '../analytics.js';
 
 const PAPERS = {
   a4: { label: 'A4 (210 × 297 mm)', w: 210, h: 297 },
@@ -213,6 +214,7 @@ export async function printView(root) {
 
   async function doPrint() {
     await build();
+    track('imprimir', `Imprimir (${chosenCards().length} cartas)`);
     window.print();
   }
 

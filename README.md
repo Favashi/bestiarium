@@ -30,6 +30,9 @@ ordenador. No necesita servidor, cuenta ni compilación.
 - **Datos:** se guardan en el dispositivo (IndexedDB) y se exportan o importan en JSON para hacer copias o pasar
   monstruos entre dispositivos.
 - **Tutorial:** se muestra la primera vez que abres la app y puedes volver a verlo desde Ajustes.
+- **Estadísticas anónimas** con [GoatCounter](https://www.goatcounter.com/): sin cookies ni datos personales y sin
+  enviar el contenido de las cartas. Se pueden desactivar en Ajustes y no se envía nada sin conexión ni en
+  `localhost`. La configuración está en `js/analytics.js`.
 
 | Mazos | Impresión |
 |---|---|

@@ -33,6 +33,9 @@ export function creditsView(root, { focusApps = false } = {}) {
         row('Oswald', 'Vernon Adams y colaboradores · SIL Open Font License'),
         row('Jost', 'Owen Earl (indestructible type*) · SIL Open Font License'))),
 
+    section('Privacidad',
+      h('p', {}, 'Tus monstruos y mazos se guardan solo en tu dispositivo. Las visitas se cuentan de forma anónima con GoatCounter (sin cookies); puedes desactivarlo en Ajustes.')),
+
     section('Licencia',
       h('p', {}, 'El código de Bestiarium se distribuye bajo licencia MIT. Las tipografías mantienen su propia licencia (SIL OFL 1.1).')),
 

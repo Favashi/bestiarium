@@ -6,6 +6,7 @@ import { pickFile } from '../image.js';
 import { h, toast, download, confirmDialog } from '../ui.js';
 import { state } from '../state.js';
 import { openTutorial } from '../tutorial.js';
+import { track, optedOut, setEnabled } from '../analytics.js';
 
 export async function settingsView(root) {
   const storageInfo = h('p', { class: 'muted' }, '');
@@ -14,6 +15,7 @@ export async function settingsView(root) {
     const list = await getAllCards();
     download(`bestiarium-${new Date().toISOString().slice(0, 10)}.json`, exportJSON(list, await getDecks()));
     await setMeta('lastBackup', Date.now());
+    track('exportar', 'Exportar copia');
     toast(`${list.length} monstruos exportados`);
   }
 
@@ -23,6 +25,7 @@ export async function settingsView(root) {
     try {
       const { monsters, decks } = parseImport(await file.text());
       await putCards(monsters);
+      track('importar', 'Importar copia');
       if (decks.length) await saveDecks(mergeDecks(await getDecks(), decks));
       toast(`${monsters.length} monstruos${decks.length ? ` y ${decks.length} mazo(s)` : ''} importados`);
     } catch (e) {
@@ -67,6 +70,11 @@ export async function settingsView(root) {
     section('Uso sin conexión',
       h('p', { class: 'muted' }, 'Tras abrirla una vez con conexión, la app funciona sin internet. Para instalarla: en Android/Chrome, menú ⋮ → «Instalar aplicación»; en iPhone/Safari, Compartir → «Añadir a pantalla de inicio».'),
       storageInfo),
+    section('Estadísticas anónimas',
+      h('p', { class: 'muted' }, 'Bestiarium cuenta las visitas y algunas acciones (crear monstruo, imprimir…) con GoatCounter: sin cookies, sin datos personales y sin enviar el contenido de tus cartas. Sirve para saber si la app se usa y desde dónde llegan las visitas.'),
+      h('label', { class: 'check' }, h('input', { type: 'checkbox', checked: !optedOut(),
+        onchange: e => { setEnabled(e.target.checked); toast(e.target.checked ? 'Estadísticas activadas' : 'Estadísticas desactivadas en este navegador'); } }),
+        'Enviar estadísticas anónimas desde este navegador')),
     section('Créditos', h('p', { class: 'muted' }, 'Autoría, tipografías y avisos legales.'), h('a', { class: 'btn', href: '#/credits', style: { alignSelf: 'flex-start' } }, 'Ver créditos')),
     section('Zona peligrosa', h('button', { class: 'btn danger', onclick: wipe }, 'Borrar todos los monstruos y mazos'))));
 

@@ -8,17 +8,18 @@ import { settingsView } from './views/settings.js';
 import { creditsView } from './views/credits.js';
 import { CREDITS } from './credits.js';
 import { maybeShowTutorial } from './tutorial.js';
+import { pageview } from './analytics.js';
 
 const view = document.getElementById('view');
 let cleanup = null;
 
 const routes = [
-  { re: /^#?\/?$/, nav: 'library', fn: () => libraryView(view) },
-  { re: /^#\/edit\/(.+)$/, nav: 'library', fn: m => editorView(view, decodeURIComponent(m[1])) },
-  { re: /^#\/print$/, nav: 'print', fn: () => printView(view) },
-  { re: /^#\/settings$/, nav: 'settings', fn: () => settingsView(view) },
-  { re: /^#\/credits$/, nav: 'credits', fn: () => creditsView(view) },
-  { re: /^#\/apps$/, nav: 'credits', fn: () => creditsView(view, { focusApps: true }) },
+  { re: /^#?\/?$/, nav: 'library', page: 'bestiario', title: 'Bestiario', fn: () => libraryView(view) },
+  { re: /^#\/edit\/(.+)$/, nav: 'library', page: 'editor', title: 'Editor', fn: m => editorView(view, decodeURIComponent(m[1])) },
+  { re: /^#\/print$/, nav: 'print', page: 'imprimir', title: 'Imprimir', fn: () => printView(view) },
+  { re: /^#\/settings$/, nav: 'settings', page: 'ajustes', title: 'Ajustes', fn: () => settingsView(view) },
+  { re: /^#\/credits$/, nav: 'credits', page: 'creditos', title: 'Créditos', fn: () => creditsView(view) },
+  { re: /^#\/apps$/, nav: 'credits', page: 'mas-apps', title: 'Más apps', fn: () => creditsView(view, { focusApps: true }) },
 ];
 
 async function route() {
@@ -30,6 +31,7 @@ async function route() {
   document.querySelectorAll('[data-nav]').forEach(a => a.classList.toggle('active', a.dataset.nav === r.nav));
   view.replaceChildren();
   window.scrollTo(0, 0);
+  pageview(r.page, r.title);
   try {
     cleanup = await r.fn(hash.match(r.re));
   } catch (e) {

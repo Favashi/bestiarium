@@ -6,6 +6,7 @@ import { parseStatBlock } from '../parse.js';
 import { fitWhenReady } from '../fit.js';
 import { fileToDataURL, pickFile } from '../image.js';
 import { h, scaled, toast, debounce, askText, confirmDialog } from '../ui.js';
+import { track } from '../analytics.js';
 
 export async function editorView(root, id) {
   let m = await getCard(id);
@@ -88,6 +89,7 @@ export async function editorView(root, id) {
             if (abilities && abilities.length) m.abilities = abilities;
             ta.value = '';
             toast('Datos rellenados. Revisa el resultado.');
+            track('pegar-bloque', 'Pegar bloque de estadísticas');
             changed(true);
           } }, 'Rellenar campos'),
           h('span', { class: 'hint' }, 'Sustituye los campos que encuentre.'))));
@@ -109,6 +111,7 @@ export async function editorView(root, id) {
           const name = await askText('Nuevo mazo', 'Nombre del mazo o aventura', '', 'Crear');
           if (!name) return;
           const d = newDeck(name);
+          track('nuevo-mazo', 'Nuevo mazo');
           setCount(d, m.id, 1);
           decks.push(d);
           await saveDecks(decks);

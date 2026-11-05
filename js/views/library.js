@@ -6,6 +6,7 @@ import { exportJSON } from '../io.js';
 import { getDecks, saveDecks, newDeck, countIn, setCount, totalCards, purgeMonsters } from '../decks.js';
 import { h, scaled, watchScale, toast, download, dialog, askText, confirmDialog, slug } from '../ui.js';
 import { state } from '../state.js';
+import { track } from '../analytics.js';
 
 export async function libraryView(root) {
   let cards = await getAllCards();
@@ -24,6 +25,7 @@ export async function libraryView(root) {
   const newBtn = h('button', { class: 'btn primary', onclick: async () => {
     const m = newMonster();
     await putCard(m);
+    track('nuevo-monstruo', 'Nuevo monstruo');
     const deck = currentDeck();
     if (deck) { setCount(deck, m.id, 1); await saveDecks(decks); }
     location.hash = `#/edit/${m.id}`;
@@ -51,6 +53,7 @@ export async function libraryView(root) {
     const d = newDeck(name);
     decks.push(d);
     await saveDecks(decks);
+    track('nuevo-mazo', 'Nuevo mazo');
     state.deckFilter = d.id;
     render();
     toast(`Mazo «${d.name}» creado`);
