@@ -15,7 +15,7 @@ const PAPERS = {
 
 const DEFAULTS = {
   source: 'all', paper: 'a4', orient: 'auto', margin: 6, gap: 0,
-  cutmarks: true, square: false, inkSave: false, backs: true, flip: 'long', backX: 0, backY: 0,
+  cutmarks: true, square: false, mbPaper: 'card', backs: true, flip: 'long', backX: 0, backY: 0,
 };
 
 function capacity(pw, ph, cw, ch, m, g) {
@@ -56,6 +56,8 @@ export async function printView(root) {
   const all = await getAllCards();
   const decks = await getDecks();
   const opts = { ...DEFAULTS, ...(await getMeta('printOpts', {})) };
+  if (opts.inkSave && opts.mbPaper === 'card') opts.mbPaper = 'ink'; // opción antigua «ahorra tinta»
+  delete opts.inkSave;
   // Origen: el que pidió la biblioteca, si no el último usado (si sigue existiendo)
   if (state.printSource) opts.source = state.printSource;
   state.printSource = '';
@@ -148,7 +150,11 @@ export async function printView(root) {
     h('div', { class: 'row two' }, field('Margen (mm)', num('margin', 0, 30)), field('Separación (mm)', num('gap', 0, 10))),
     chk('cutmarks', 'Líneas de corte'),
     chk('square', 'Esquinas rectas (más fácil de recortar)'),
-    chk('inkSave', 'Mörk Borg con fondo blanco (ahorra tinta)'),
+    field('Fondo de las cartas Mörk Borg', sel('mbPaper', [
+      ['card', 'Como esté en cada carta'],
+      ['white', 'Blanco en todas'],
+      ['yellow', 'Amarillo en todas'],
+      ['ink', 'Blanco y etiquetas en negro (ahorra tinta)']])),
     chk('backs', 'Imprimir reversos (doble cara)'),
     backBox,
     summary,
@@ -174,7 +180,9 @@ export async function printView(root) {
     const ph = orient === 'landscape' ? paper.w : paper.h;
     document.getElementById('page-style').textContent = `@page { size: ${pw}mm ${ph}mm; margin: 0; }`;
 
-    const cls = [opts.cutmarks && 'cutmarks', opts.square && 'square', opts.inkSave && 'ink-save'].filter(Boolean).join(' ');
+    // Fondo forzado para las cartas Mörk Borg (sin tocar las cartas guardadas)
+    const face = c => (c.system === 'mb' && (opts.mbPaper === 'white' || opts.mbPaper === 'yellow') ? { ...c, mbPaper: opts.mbPaper } : c);
+    const cls = [opts.cutmarks && 'cutmarks', opts.square && 'square', opts.mbPaper === 'ink' && 'ink-save'].filter(Boolean).join(' ');
     const sheets = [];
     const warnings = [];
 
@@ -184,15 +192,15 @@ export async function printView(root) {
       for (let i = 0; i < g.cards.length; i += cap.n) {
         const chunk = g.cards.slice(i, i + cap.n);
         const base = { pw, ph, cw: g.w, ch: g.h, cols: cap.cols, rows: cap.rows, gap: opts.gap, cls };
-        const front = chunk.map((c, k) => ({ r: Math.floor(k / cap.cols), c: k % cap.cols, html: renderFace(c, 'front') }));
+        const front = chunk.map((c, k) => ({ r: Math.floor(k / cap.cols), c: k % cap.cols, html: renderFace(face(c), 'front') }));
         sheets.push({ label: `Anverso · ${g.w}×${g.h} mm`, html: sheetHTML({ ...base, slots: front }) });
 
         if (opts.backs && chunk.length) {
           const back = chunk.map((c, k) => {
             const r = Math.floor(k / cap.cols), col = k % cap.cols;
             return opts.flip === 'long'
-              ? { r, c: cap.cols - 1 - col, html: renderFace(c, 'back') }
-              : { r: cap.rows - 1 - r, c: col, rot: true, html: renderFace(c, 'back') };
+              ? { r, c: cap.cols - 1 - col, html: renderFace(face(c), 'back') }
+              : { r: cap.rows - 1 - r, c: col, rot: true, html: renderFace(face(c), 'back') };
           });
           sheets.push({ label: `Reverso · ${g.w}×${g.h} mm`, html: sheetHTML({ ...base, slots: back, dx: opts.backX, dy: opts.backY }) });
         }
