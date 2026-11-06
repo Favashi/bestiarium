@@ -2,8 +2,9 @@ import { getAllCards, putCard, putCards, deleteCard } from '../store.js';
 import { CARD, newMonster, newMBMonster, uid } from '../model.js';
 import { defaultSystem } from '../theme.js';
 
-/** Dato breve bajo cada carta: DG en OSE, vida en Mörk Borg. */
-const statLabel = m => (m.system === 'mb' ? (m.hp ? `Vida ${m.hp}` : '') : (m.hd ? `DG ${m.hd}` : ''));
+/** Dato breve bajo cada carta: DG en OSE (orienta sobre el nivel); en Mörk Borg no hace falta. */
+const statLabel = m => (m.system === 'mb' || !m.hd ? '' : `DG ${m.hd}`);
+const SYSTEM_BADGE = { ose: 'OSE', mb: 'Mörk Borg' };
 import { renderFront } from '../render.js';
 import { fitWhenReady } from '../fit.js';
 import { exportJSON } from '../io.js';
@@ -42,12 +43,21 @@ export async function libraryView(root) {
 
   // ---------- pestañas de mazos ----------
   function renderTabs() {
-    const tab = (id, label, count, deck = null) => h('div', { class: `deck-tab${state.deckFilter === id ? ' on' : ''}` },
-      h('button', { type: 'button', class: 'deck-tab-main',
+    // Si todas las cartas de un mazo son del mismo sistema, la pestaña lo indica.
+    const deckSystem = deck => {
+      const systems = new Set(cards.filter(c => countIn(deck, c.id)).map(c => c.system === 'mb' ? 'mb' : 'ose'));
+      return systems.size === 1 ? [...systems][0] : null;
+    };
+    const tab = (id, label, count, deck = null) => {
+      const sys = deck && deckSystem(deck);
+      return h('div', { class: `deck-tab${state.deckFilter === id ? ' on' : ''}${sys ? ` sys-${sys}` : ''}` },
+      h('button', { type: 'button', class: 'deck-tab-main', title: sys ? `${label} · todas las cartas son de ${SYSTEM_BADGE[sys]}` : null,
         onclick: () => { state.deckFilter = id; state.selection.clear(); selecting = false; render(); } },
+        sys ? h('em', { class: `deck-sys sys-${sys}` }, SYSTEM_BADGE[sys]) : null,
         h('span', {}, label), h('small', {}, String(count))),
       deck ? h('button', { type: 'button', class: 'deck-tab-x', title: `Eliminar el mazo ${deck.name}`, 'aria-label': `Eliminar el mazo ${deck.name}`,
         onclick: () => deleteDeck(deck) }, icon('x')) : null);
+    };
     tabs.replaceChildren(
       tab('', 'Todos', cards.length),
       ...decks.map(d => tab(d.id, d.name, totalCards(d), d)),

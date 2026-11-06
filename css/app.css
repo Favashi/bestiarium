@@ -548,6 +548,10 @@ h2.view-title::after, .deck-head h2::after {
 .deck-tab-x:hover, .deck-tab-x:focus-visible { opacity: 1; background: rgba(0,0,0,.08); }
 .deck-tab.on .deck-tab-x:hover { background: rgba(255,255,255,.15); }
 .deck-tab.add { padding: 7px 14px 6px; }
+/* Sistema del mazo cuando todas sus cartas son del mismo juego */
+.deck-sys { flex: none; white-space: nowrap; align-self: center; font-style: normal; font-family: var(--font-body); font-size: 10.5px; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; line-height: 1; padding: 3px 5px 2px; border: 1.5px solid currentColor; border-radius: 2px; }
+.deck-sys.sys-mb { background: #ffe82c; color: #000; border-color: #000; }
 .dlg-list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
 
 /* =================== Tema MÖRK BORG =================== */
@@ -662,6 +666,8 @@ h2.view-title::after, .deck-head h2::after {
 [data-theme="mb"] .deck-tab.on small { color: #000; }
 [data-theme="mb"] .deck-tab.on .deck-tab-x:hover { background: rgba(0,0,0,.1); }
 [data-theme="mb"] .deck-tab.add { background: transparent; }
+[data-theme="mb"] .deck-sys { border-width: 1px; border-radius: 0; }
+[data-theme="mb"] .deck-tab.on .deck-sys.sys-mb { background: #000; color: var(--mb-y); }
 [data-theme="mb"] .empty { outline: 0; background: #fff; border-width: 1px; }
 [data-theme="mb"] .empty h3 { font-size: 42px; }
 
