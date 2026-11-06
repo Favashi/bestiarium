@@ -138,6 +138,11 @@ Proyecto de aficionado, no oficial y sin afiliación. *Old-School Essentials* es
 en la Marca del Este* y el resto de marcas citadas pertenecen a sus respectivos propietarios. Los monstruos de ejemplo
 usan mecánicas genéricas B/X o de Mörk Borg con descripciones originales.
 
-Bestiarium es una producción independiente de Toni Ruiz y no está afiliada a Ockult Örtmästare Games ni a Stockholm
-Kartell. Se publica bajo la licencia de terceros de MÖRK BORG. MÖRK BORG es © 2019 Ockult Örtmästare Games y
-Stockholm Kartell.
+<img src="icons/compatible-mork-borg.svg" alt="Compatible with MÖRK BORG" width="200">
+
+MÖRK BORG IS ©2019 OCKULT ÖRTMÄSTARE GAMES AND STOCKHOLM KARTELL.
+
+Bestiarium is an independent production by Toni Ruiz and is not affiliated with Ockult Örtmästare Games or Stockholm
+Kartell. It is published under the MÖRK BORG Third Party License.
+
+MÖRK BORG is copyright Ockult Örtmästare Games and Stockholm Kartell.

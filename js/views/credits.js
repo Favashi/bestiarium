@@ -25,9 +25,11 @@ export function creditsView(root, { focusApps = false } = {}) {
       h('p', {}, 'Las cartas siguen el formato de los bloques de monstruo de ',
         h('i', {}, 'Old-School Essentials'), ' y de ', h('i', {}, 'Aventuras en la Marca del Este'),
         '. Los cálculos automáticos (TAC0, salvaciones, PX) usan las tablas de la edición B/X.'),
-      h('p', {}, 'Las cartas de Mörk Borg siguen el formato de sus bloques de monstruo (Vida, Moral, Armadura, ataques y Especial). El tema visual es un homenaje a su estética: tipografías libres, sin usar el logotipo ni el arte del juego.'),
+      h('p', {}, 'Las cartas de Mörk Borg siguen el formato de sus bloques de monstruo (Vida, Moral, Armadura, ataques y Especial). El tema visual es un homenaje a su estética: tipografías libres, sin el logotipo ni el arte del juego; solo el logotipo de compatibilidad que permite su licencia de terceros.'),
+      h('img', { class: 'compat-mb', src: 'icons/compatible-mork-borg.svg', alt: 'Compatible with MÖRK BORG', width: 269, height: 77 }),
       h('p', { class: 'fine' }, 'Proyecto de aficionado, no oficial y sin afiliación. Old-School Essentials es marca de Necrotic Gnome; Aventuras en la Marca del Este y el resto de marcas citadas pertenecen a sus respectivos propietarios.'),
-      h('p', { class: 'fine' }, 'Bestiarium es una producción independiente de ', c.author, ' y no está afiliada a Ockult Örtmästare Games ni a Stockholm Kartell. Se publica bajo la licencia de terceros de MÖRK BORG. MÖRK BORG es © 2019 Ockult Örtmästare Games y Stockholm Kartell.')),
+      // Texto exigido por la MÖRK BORG Third Party License (se deja en inglés, tal cual).
+      h('p', { class: 'fine', lang: 'en' }, 'MÖRK BORG IS ©2019 OCKULT ÖRTMÄSTARE GAMES AND STOCKHOLM KARTELL. Bestiarium is an independent production by ', c.author, ' and is not affiliated with Ockult Örtmästare Games or Stockholm Kartell. It is published under the MÖRK BORG Third Party License. MÖRK BORG is copyright Ockult Örtmästare Games and Stockholm Kartell.')),
 
     section('Tipografías',
       h('dl', {},

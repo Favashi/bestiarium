@@ -1,6 +1,6 @@
 // Service worker: precachea la app para que funcione sin conexión.
 // Cambia VERSION cada vez que publiques cambios para forzar la actualización.
-const VERSION = 'v24';
+const VERSION = 'v25';
 const CACHE = `bestiario-${VERSION}`;
 
 const ASSETS = [
@@ -11,7 +11,7 @@ const ASSETS = [
   'js/app.js', 'js/model.js', 'js/store.js', 'js/render.js', 'js/fit.js', 'js/ui.js',
   'js/io.js', 'js/image.js', 'js/samples.js', 'js/state.js', 'js/parse.js', 'js/decks.js', 'js/credits.js', 'js/tutorial.js', 'js/analytics.js', 'js/theme.js',
   'js/views/library.js', 'js/views/editor.js', 'js/views/print.js', 'js/views/settings.js', 'js/views/credits.js',
-  'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png',
+  'icons/icon.svg', 'icons/compatible-mork-borg.svg', 'icons/icon-192.png', 'icons/icon-512.png',
   'fonts/pirata-one-latin-400-normal.woff2',
   'fonts/oswald-latin-500-normal.woff2', 'fonts/oswald-latin-700-normal.woff2',
   'fonts/jost-latin-400-normal.woff2', 'fonts/jost-latin-400-italic.woff2',
