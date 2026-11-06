@@ -1,5 +1,5 @@
 import { getAllCards, getMeta, setMeta } from '../store.js';
-import { CARD } from '../model.js';
+import { CARD, MB_DECOS } from '../model.js';
 import { renderFace } from '../render.js';
 import { fitWhenReady } from '../fit.js';
 import { h, icon, scaled, watchScale } from '../ui.js';
@@ -15,7 +15,7 @@ const PAPERS = {
 
 const DEFAULTS = {
   source: 'all', paper: 'a4', orient: 'auto', margin: 6, gap: 0,
-  cutmarks: true, square: false, mbPaper: 'card', backs: true, flip: 'long', backX: 0, backY: 0,
+  cutmarks: true, square: false, mbPaper: 'card', mbFrame: 'card', mbDeco: 'card', backs: true, flip: 'long', backX: 0, backY: 0,
 };
 
 function capacity(pw, ph, cw, ch, m, g) {
@@ -55,9 +55,11 @@ function sheetHTML({ pw, ph, cw, ch, cols, rows, gap, cls, slots, dx = 0, dy = 0
 export async function printView(root) {
   const all = await getAllCards();
   const decks = await getDecks();
-  const opts = { ...DEFAULTS, ...(await getMeta('printOpts', {})) };
-  if (opts.inkSave && opts.mbPaper === 'card') opts.mbPaper = 'ink'; // opción antigua «ahorra tinta»
-  delete opts.inkSave;
+  // El aspecto forzado de las cartas MB es solo para esta impresión: no se guarda y empieza siempre «como cada carta».
+  const TEMP = ['mbPaper', 'mbFrame', 'mbDeco', 'inkSave'];
+  const saved = await getMeta('printOpts', {});
+  TEMP.forEach(k => delete saved[k]);
+  const opts = { ...DEFAULTS, ...saved };
   // Origen: el que pidió la biblioteca, si no el último usado (si sigue existiendo)
   if (state.printSource) opts.source = state.printSource;
   state.printSource = '';
@@ -89,7 +91,11 @@ export async function printView(root) {
   const preview = h('div', { class: 'print-preview' });
   const summary = h('p', { class: 'muted', style: { margin: 0, fontSize: '13px' } });
 
-  const persist = () => setMeta('printOpts', { ...opts, source: opts.source === 'selection' ? '' : opts.source });
+  const persist = () => {
+    const keep = { ...opts, source: opts.source === 'selection' ? '' : opts.source };
+    TEMP.forEach(k => delete keep[k]);
+    return setMeta('printOpts', keep);
+  };
   let lastSource = opts.source;
   const update = () => {
     persist();
@@ -116,8 +122,13 @@ export async function printView(root) {
 
   // ---------- lista de cartas con copias ----------
   const cardList = h('div', { class: 'print-list' });
+  const listCount = h('span', { class: 'muted' });
   function renderList() {
-    const rows = listed().map(c => {
+    const mons = listed();
+    const total = mons.reduce((n, c) => n + (qty.get(c.id) || 0), 0);
+    const chosen = mons.filter(c => qty.get(c.id)).length;
+    listCount.textContent = `${total} carta(s) · ${chosen} de ${mons.length} monstruo(s)`;
+    const rows = mons.map(c => {
       const n = qty.get(c.id) || 0;
       const out = h('output', {}, String(n));
       const set = v => { qty.set(c.id, Math.max(0, Math.min(99, v))); renderList(); build(); };
@@ -141,25 +152,39 @@ export async function printView(root) {
     h('div', { class: 'row two' }, field('Reverso X (mm)', num('backX', -10, 10, 0.25)), field('Reverso Y (mm)', num('backY', -10, 10, 0.25))),
     h('p', { class: 'hint' }, 'Si los reversos salen desplazados, corrige con los ajustes X/Y.'));
 
+  // Aspecto de las cartas Mörk Borg solo para esta impresión (las cartas guardadas no cambian)
+  const AS_CARD = ['card', 'Como esté en cada carta'];
+  const lookBox = h('div', { class: 'stack' },
+    field('Fondo', sel('mbPaper', [AS_CARD, ['white', 'Blanco en todas'], ['yellow', 'Amarillo en todas'], ['ink', 'Blanco y negro (ahorra tinta)']])),
+    field('Marco', sel('mbFrame', [AS_CARD, ['on', 'Con marco en todas'], ['off', 'Sin marco en todas']])),
+    field('Decoración de fondo', sel('mbDeco', [AS_CARD, ...Object.entries(MB_DECOS).map(([k, l]) => [k, `${l} en todas`])])),
+    h('p', { class: 'hint' }, 'Las cartas guardadas no cambian. Al salir de Imprimir vuelve a «como esté en cada carta».'));
+
+  // Opciones agrupadas por función, cada grupo con su título
+  const sec = (title, ...children) => h('section', { class: 'print-sec stack' }, h('h3', {}, title), ...children);
   const options = h('div', { class: 'print-options panel stack' },
     h('h2', { class: 'view-title', style: { margin: 0 } }, 'Imprimir'),
-    field('Qué imprimir', sel('source', sourceOptions)),
-    h('div', { class: 'field' }, h('span', {}, 'Cartas y copias'), cardList, listTools),
-    field('Papel', sel('paper', Object.entries(PAPERS).map(([k, p]) => [k, p.label]))),
-    field('Orientación de la hoja', sel('orient', [['auto', 'Automática (menos hojas)'], ['portrait', 'Vertical'], ['landscape', 'Horizontal']])),
-    h('div', { class: 'row two' }, field('Margen (mm)', num('margin', 0, 30)), field('Separación (mm)', num('gap', 0, 10))),
-    chk('cutmarks', 'Líneas de corte'),
-    chk('square', 'Esquinas rectas (más fácil de recortar)'),
-    field('Fondo de las cartas Mörk Borg', sel('mbPaper', [
-      ['card', 'Como esté en cada carta'],
-      ['white', 'Blanco en todas'],
-      ['yellow', 'Amarillo en todas'],
-      ['ink', 'Blanco y etiquetas en negro (ahorra tinta)']])),
-    chk('backs', 'Imprimir reversos (doble cara)'),
-    backBox,
-    summary,
-    h('button', { class: 'btn primary', onclick: doPrint }, 'Imprimir / Guardar PDF'),
-    h('p', { class: 'hint' }, 'En el diálogo elige escala 100 % («Tamaño real») y sin márgenes. En el móvil usa «Guardar como PDF» o Compartir → Imprimir.'));
+    sec('Qué imprimir',
+      sel('source', sourceOptions),
+      // Lista de cartas y copias plegada por defecto
+      h('details', { class: 'print-cards' },
+        h('summary', {}, h('span', { class: 'pc-title' }, 'Cartas y copias'), listCount),
+        cardList, listTools)),
+    sec('Hoja',
+      field('Papel', sel('paper', Object.entries(PAPERS).map(([k, p]) => [k, p.label]))),
+      field('Orientación', sel('orient', [['auto', 'Automática (menos hojas)'], ['portrait', 'Vertical'], ['landscape', 'Horizontal']])),
+      h('div', { class: 'row two' }, field('Margen (mm)', num('margin', 0, 30)), field('Separación (mm)', num('gap', 0, 10)))),
+    sec('Recorte',
+      chk('cutmarks', 'Líneas de corte'),
+      chk('square', 'Esquinas rectas (más fácil de recortar)')),
+    sec('Aspecto Mörk Borg · solo esta impresión', lookBox),
+    sec('Reversos',
+      chk('backs', 'Imprimir reversos (doble cara)'),
+      backBox),
+    h('div', { class: 'print-go stack' },
+      summary,
+      h('button', { class: 'btn primary', onclick: doPrint }, 'Imprimir / Guardar PDF'),
+      h('p', { class: 'hint' }, 'En el diálogo elige escala 100 % («Tamaño real») y sin márgenes. En el móvil usa «Guardar como PDF» o Compartir → Imprimir.')));
 
   // Columna lateral con su propio desplazamiento: las opciones de abajo quedan a mano aunque haya muchas hojas.
   root.append(h('div', { class: 'print-layout' }, h('div', { class: 'print-side' }, options), preview));
@@ -182,7 +207,15 @@ export async function printView(root) {
     document.getElementById('page-style').textContent = `@page { size: ${pw}mm ${ph}mm; margin: 0; }`;
 
     // Fondo forzado para las cartas Mörk Borg (sin tocar las cartas guardadas)
-    const face = c => (c.system === 'mb' && (opts.mbPaper === 'white' || opts.mbPaper === 'yellow') ? { ...c, mbPaper: opts.mbPaper } : c);
+    const face = c => {
+      if (c.system !== 'mb') return c;
+      const o = { ...c };
+      if (opts.mbPaper === 'white' || opts.mbPaper === 'ink') o.mbPaper = 'white';
+      if (opts.mbPaper === 'yellow') o.mbPaper = 'yellow';
+      if (opts.mbFrame !== 'card') o.frame = opts.mbFrame === 'on';
+      if (opts.mbDeco !== 'card') o.mbDeco = opts.mbDeco;
+      return o;
+    };
     const cls = [opts.cutmarks && 'cutmarks', opts.square && 'square', opts.mbPaper === 'ink' && 'ink-save'].filter(Boolean).join(' ');
     const sheets = [];
     const warnings = [];

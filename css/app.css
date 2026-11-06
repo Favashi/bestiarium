@@ -329,6 +329,24 @@ h2.view-title {
   padding: 8px 12px 12px; margin: -8px -12px 0; scrollbar-width: thin; }
 .print-options { position: relative; }
 .panel { background: var(--sheet); border: 2px solid var(--ink); outline: 1px solid var(--ink); outline-offset: 3px; margin: 4px; padding: 16px; }
+/* Imprimir: grupos de opciones con título */
+.print-sec { padding-top: 14px; border-top: 1.5px solid var(--ink); }
+.print-sec > h3 { margin: 0; font-family: var(--font-head); font-weight: 700; font-size: 14px; letter-spacing: .07em; text-transform: uppercase; }
+.print-go { padding-top: 14px; border-top: 1.5px solid var(--ink); }
+.print-cards > summary { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  cursor: pointer; padding: 8px 10px; border: 1.5px solid var(--ink); background: var(--paper-2); list-style: none; }
+.print-cards > summary::-webkit-details-marker { display: none; }
+.print-cards > summary .pc-title::before { content: "▸ "; }
+.print-cards[open] > summary .pc-title::before { content: "▾ "; }
+.print-cards > summary .pc-title { font-weight: 600; }
+.print-cards > summary .muted { font-size: 12.5px; }
+.print-cards[open] > summary { border-bottom: 0; }
+.print-cards[open] .print-list { margin-bottom: 8px; }
+[data-theme="mb"] .print-sec, [data-theme="mb"] .print-go { border-top-width: 1px; }
+[data-theme="mb"] .print-sec > h3 { display: inline-block; align-self: flex-start; background: var(--mb-y); padding: 1px 8px 0;
+  font-weight: 400; font-size: 13px; letter-spacing: .02em; text-transform: none; }
+[data-theme="mb"] .print-cards > summary { border-width: 1px; background: #fff; }
+[data-theme="mb"] .print-cards > summary .pc-title { font-weight: 700; }
 .row { display: grid; gap: 10px; }
 .row.two { grid-template-columns: 1fr 1fr; }
 .check { display: inline-flex; align-items: center; gap: 10px; font-size: 15px; cursor: pointer; }
