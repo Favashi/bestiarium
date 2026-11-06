@@ -332,7 +332,10 @@ h2.view-title {
 /* Imprimir: grupos de opciones con título */
 .print-sec { padding-top: 14px; border-top: 1.5px solid var(--ink); }
 .print-sec > h3 { margin: 0; font-family: var(--font-head); font-weight: 700; font-size: 14px; letter-spacing: .07em; text-transform: uppercase; }
-.print-go { padding-top: 14px; border-top: 1.5px solid var(--ink); }
+.print-go { position: sticky; bottom: -12px; z-index: 3; /* -12px: tapa el relleno inferior de .print-side */ margin: 0 -16px -16px; padding: 12px 16px 14px;
+  background: var(--sheet); border-top: 1.5px solid var(--ink); box-shadow: 0 -6px 10px -6px rgba(0,0,0,.18); }
+.print-fine > summary { cursor: pointer; font-size: 13px; color: var(--muted); }
+.print-fine[open] > summary { margin-bottom: 8px; }
 .print-cards > summary { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap;
   cursor: pointer; padding: 8px 10px; border: 1.5px solid var(--ink); background: var(--paper-2); list-style: none; }
 .print-cards > summary::-webkit-details-marker { display: none; }
@@ -364,6 +367,7 @@ h2.view-title {
 @media (max-width: 900px) {
   .print-layout { grid-template-columns: 1fr; }
   .print-side { position: static; max-height: none; overflow: visible; padding: 0; margin: 0; }
+  .print-go { bottom: 0; }
 }
 
 .settings { max-width: 680px; display: flex; flex-direction: column; gap: 22px; }

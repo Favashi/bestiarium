@@ -149,16 +149,17 @@ export async function printView(root) {
 
   const backBox = h('div', { class: 'stack', style: { display: opts.backs ? '' : 'none' } },
     field('Volteo de la hoja', sel('flip', [['long', 'Por el borde largo (lo habitual)'], ['short', 'Por el borde corto']])),
-    h('div', { class: 'row two' }, field('Reverso X (mm)', num('backX', -10, 10, 0.25)), field('Reverso Y (mm)', num('backY', -10, 10, 0.25))),
-    h('p', { class: 'hint' }, 'Si los reversos salen desplazados, corrige con los ajustes X/Y.'));
+    // Ajuste fino plegado: solo hace falta si los reversos salen desplazados
+    h('details', { class: 'print-fine', open: !!(opts.backX || opts.backY) },
+      h('summary', {}, 'Ajustar desplazamiento del reverso'),
+      h('div', { class: 'row two' }, field('Reverso X (mm)', num('backX', -10, 10, 0.25)), field('Reverso Y (mm)', num('backY', -10, 10, 0.25)))));
 
   // Aspecto de las cartas Mörk Borg solo para esta impresión (las cartas guardadas no cambian)
   const AS_CARD = ['card', 'Como esté en cada carta'];
   const lookBox = h('div', { class: 'stack' },
     field('Fondo', sel('mbPaper', [AS_CARD, ['white', 'Blanco en todas'], ['yellow', 'Amarillo en todas'], ['ink', 'Blanco y negro (ahorra tinta)']])),
     field('Marco', sel('mbFrame', [AS_CARD, ['on', 'Con marco en todas'], ['off', 'Sin marco en todas']])),
-    field('Decoración de fondo', sel('mbDeco', [AS_CARD, ...Object.entries(MB_DECOS).map(([k, l]) => [k, `${l} en todas`])])),
-    h('p', { class: 'hint' }, 'Las cartas guardadas no cambian. Al salir de Imprimir vuelve a «como esté en cada carta».'));
+    field('Decoración de fondo', sel('mbDeco', [AS_CARD, ...Object.entries(MB_DECOS).map(([k, l]) => [k, `${l} en todas`])])));
 
   // Opciones agrupadas por función, cada grupo con su título
   const sec = (title, ...children) => h('section', { class: 'print-sec stack' }, h('h3', {}, title), ...children);
@@ -177,14 +178,15 @@ export async function printView(root) {
     sec('Recorte',
       chk('cutmarks', 'Líneas de corte'),
       chk('square', 'Esquinas rectas (más fácil de recortar)')),
-    sec('Aspecto Mörk Borg · solo esta impresión', lookBox),
+    sec('Aspecto Mörk Borg (solo esta impresión)', lookBox),
     sec('Reversos',
       chk('backs', 'Imprimir reversos (doble cara)'),
       backBox),
+    h('p', { class: 'hint' }, 'En el diálogo de impresión elige escala 100 % («Tamaño real») y sin márgenes. En el móvil, «Guardar como PDF» o Compartir → Imprimir.'),
+    // Resumen y botón siempre visibles al pie de la columna
     h('div', { class: 'print-go stack' },
       summary,
-      h('button', { class: 'btn primary', onclick: doPrint }, 'Imprimir / Guardar PDF'),
-      h('p', { class: 'hint' }, 'En el diálogo elige escala 100 % («Tamaño real») y sin márgenes. En el móvil usa «Guardar como PDF» o Compartir → Imprimir.')));
+      h('button', { class: 'btn primary', onclick: doPrint }, 'Imprimir / Guardar PDF')));
 
   // Columna lateral con su propio desplazamiento: las opciones de abajo quedan a mano aunque haya muchas hojas.
   root.append(h('div', { class: 'print-layout' }, h('div', { class: 'print-side' }, options), preview));
