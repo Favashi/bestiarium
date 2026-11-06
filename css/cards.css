@@ -239,9 +239,9 @@
 .card.mb .hp-n { font-family: "Space Mono", monospace; }
 .card.mb .hp-boxes i { border-color: #000; border-radius: 0; background: #fff; }
 
-/* Ahorro de tinta: el amarillo pasa a ser un recuadro de filete */
+/* Ahorro de tinta: sin amarillo, las etiquetas pasan a negro con letra blanca */
 .ink-save .card.mb .mb-tag, .ink-save .card.mb .mb-kicker, .ink-save .card.mb .mb-stats dt, .ink-save .card.mb .hp-track .sec {
-  background: none; box-shadow: inset 0 0 0 .2mm #000; }
+  background: #000; color: #fff; }
 
 /* Papel amarillo: las etiquetas se invierten (losa negra con letra amarilla) */
 .card.mb.mb-yellow { background: var(--mb-yellow); }
@@ -250,7 +250,7 @@
 .card.mb.mb-yellow .hp-boxes i { background: rgba(255,255,255,.4); }
 .ink-save .card.mb.mb-yellow { background: #fff; }
 .ink-save .card.mb.mb-yellow .mb-tag, .ink-save .card.mb.mb-yellow .mb-kicker,
-.ink-save .card.mb.mb-yellow .mb-stats dt, .ink-save .card.mb.mb-yellow .hp-track .sec { background: none; color: #000; }
+.ink-save .card.mb.mb-yellow .mb-stats dt, .ink-save .card.mb.mb-yellow .hp-track .sec { background: #000; color: #fff; }
 
 /* Marco: filete grueso con otro fino por dentro, recto y sin adornos */
 .card.mb.mb-framed { --pad: 5.2mm; }

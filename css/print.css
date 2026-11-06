@@ -16,10 +16,9 @@
 .slot { position: relative; width: var(--cw); height: var(--ch); }
 .slot .card { border-radius: var(--card-radius, 3mm); }
 .slot.rot180 .card { transform: rotate(180deg); }
-.sheet.cutmarks .slot::before {
-  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 2;
-  outline: .1mm dashed rgba(0,0,0,.35);
-}
+/* Línea de corte: contorno de la propia carta, para que siga sus esquinas (redondeadas o rectas).
+   Sin ella, una carta blanca sobre papel blanco no deja ver la forma de las esquinas. */
+.sheet.cutmarks .slot .card { outline: .1mm dashed rgba(0,0,0,.45); outline-offset: 0; }
 .sheet.square .slot .card { border-radius: 0; }
 
 @media print {
