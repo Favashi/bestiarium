@@ -188,7 +188,6 @@
   font-family: "UnifrakturCook", "Pirata One", serif; font-weight: 700;
   font-size: 12cqw; line-height: .95; letter-spacing: 0; overflow-wrap: anywhere;
 }
-.card-back.mb .mb-name { font-size: 10cqw; }
 
 .card.mb .mb-top { flex: none; height: 37cqh; display: grid; grid-template-columns: 54% 1fr; grid-template-rows: minmax(0, 1fr); margin-bottom: 2.4mm; border-bottom: var(--mb-hair); }
 /* El fundido «multiplicar» va en el contenedor y no en la imagen: así el blanco del dibujo
