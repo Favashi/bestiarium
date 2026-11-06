@@ -24,7 +24,7 @@ ordenador. No necesita servidor, cuenta ni compilación.
   - **Reverso:** descripción y notas del DJ.
   - **Ajuste del texto:** el tamaño de letra se adapta solo para que todo quepa.
 - **MÖRK BORG:** cada monstruo elige su sistema en el editor. Los de Mörk Borg usan su bloque (Vida, Moral,
-  Armadura, ataques con dado, Especial y Botín), una carta propia en blanco y negro con detalles amarillos (papel blanco o amarillo, marco opcional y decoración de fondo: inicial, calavera, tachones o manchas) y un lector de bloques pegados
+  Armadura, ataques con dado, Especial y Botín), una carta propia en blanco y negro con detalles amarillos (papel blanco o amarillo, marco opcional y decoración de fondo: inicial, tachones o manchas) y un lector de bloques pegados
   en castellano o inglés. Al imprimir puedes ponerles fondo blanco para ahorrar tinta.
 - **Temas:** Clásico (blanco y negro) o Mörk Borg (blanco y negro con amarillo de subrayador, gótica y máquina de escribir), desde Ajustes. En el editor, la app adopta el tema del sistema del monstruo que editas.
 - **Mazos:** un mazo es una lista de monstruos con el número de copias de cada uno, y un monstruo puede estar en

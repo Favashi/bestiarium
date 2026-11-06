@@ -13,7 +13,7 @@ export const SAVE_LABELS = {
 };
 
 /** Decoraciones de fondo de las cartas MÖRK BORG (dibujos propios, no el logotipo). */
-export const MB_DECOS = { none: 'Ninguna', initial: 'Inicial', skull: 'Calavera', tally: 'Tachones', splatter: 'Manchas' };
+export const MB_DECOS = { none: 'Ninguna', initial: 'Inicial', tally: 'Tachones', splatter: 'Manchas' };
 
 export const ALIGNMENTS = ['Legal', 'Neutral', 'Caótico'];
 

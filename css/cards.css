@@ -202,12 +202,15 @@
   border: 0; border-radius: 0; background: repeating-linear-gradient(-45deg, transparent 0 1.4mm, rgba(0,0,0,.1) 1.4mm 1.6mm); }
 .card.mb .ph span { font-family: "UnifrakturCook", serif; font-weight: 700; font-size: 34cqw; line-height: 1; }
 
-/* Datos: celdas apiladas, etiqueta amarilla arriba y valor en negrita debajo, centrados */
-.card.mb .mb-stats { display: flex; flex-direction: column; justify-content: center; min-height: 0; margin: 0; padding-bottom: 1.6mm; }
-.card.mb .mb-stats > div { display: flex; flex-direction: column; align-items: center; text-align: center; padding: .8mm 0 .9mm 1.5mm; }
+/* Datos: celdas del mismo alto; etiqueta amarilla arriba y valor grande centrado en el resto */
+.card.mb .mb-stats { display: grid; grid-auto-rows: minmax(0, 1fr); min-height: 0; margin: 0 0 2mm; }
+.card.mb .mb-stats > div { display: flex; flex-direction: column; align-items: center; min-height: 0; padding: .9mm 0 .4mm 1.5mm; text-align: center; }
 .card.mb .mb-stats > div + div { border-top: var(--mb-hair); }
-.card.mb .mb-stats dt { font-size: 2.9cqw; line-height: 1.25; letter-spacing: .02em; background: var(--mb-yellow); padding: 0 1.2mm; margin-bottom: .6mm; }
-.card.mb .mb-stats dd { margin: 0; font-family: "Jost", sans-serif; font-size: 6.1cqw; font-weight: 700; line-height: 1.05; overflow-wrap: anywhere; }
+.card.mb .mb-stats dt { flex: none; font-size: 3.3cqw; line-height: 1.25; letter-spacing: .02em; background: var(--mb-yellow); padding: 0 1.2mm; }
+.card.mb .mb-stats dd { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; margin: 0;
+  font-family: "Jost", sans-serif; font-size: 7.6cqw; font-weight: 700; line-height: 1; text-align: center; overflow-wrap: anywhere; }
+/* Con cuatro datos las celdas son más bajas */
+.card.mb .mb-stats:has(> div:nth-child(4)) dd { font-size: 6.6cqw; }
 
 /* Etiqueta de sección: subrayador amarillo, minúscula de máquina */
 .card.mb .mb-tag {
@@ -261,28 +264,23 @@
     linear-gradient(#000, #000) top .5mm right .5mm / .2mm calc(100% - 1mm) no-repeat;
 }
 
-/* Decoraciones de fondo (dibujos propios, muy tenues). La capa va primero en el DOM y el
-   contenido se posiciona sin z-index, para no crear contextos de apilamiento que romperían
-   el fundido de la ilustración. */
+/* Decoraciones de fondo (dibujos propios, muy tenues), en una capa recortada al interior del
+   marco. La capa va primero en el DOM y el contenido se posiciona sin z-index, para no crear
+   contextos de apilamiento que romperían el fundido de la ilustración. */
 .card.mb > * { position: relative; }
-.card.mb > .mb-deco, .card.mb > .mb-ghost { position: absolute; pointer-events: none; }
-.card.mb .mb-deco { inset: 0; opacity: .075; background-repeat: no-repeat; }
-.card.mb.mb-deco-skull .mb-deco {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 110'%3E%3Cpath fill-rule='evenodd' d='M50 4C23 5 7 23 8 47c1 15 7 24 16 29l-1 16c0 7 6 11 12 11h30c6 0 12-4 12-11l-1-16c9-5 16-15 16-30C92 22 76 3 50 4ZM21 51c0-8 6-14 13-13 7 0 12 7 11 15-1 7-7 11-13 11-7 0-11-6-11-13Zm34 2c-1-8 4-15 11-15 7-1 13 5 13 13 0 7-4 13-11 13-6 0-12-4-13-11ZM50 63l-7 15h14ZM36 85h3v16h-3Zm9 0h3v17h-3Zm9 0h3v17h-3Zm9 0h3v16h-3Z'/%3E%3Cpath d='M47 5l-3 9 5 6-4 8' fill='none' stroke='%23fff' stroke-width='1.6'/%3E%3C/svg%3E");
-  background-size: 92% auto; background-position: 50% 112%; transform: rotate(-6deg); }
-.card.mb.mb-deco-tally .mb-deco { opacity: .055;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M8 8l1 16M13 7l0 17M18 8l-1 16M23 7l1 17M4 21l23-11M38 34l-1 15M43 33l1 16M48 34l0 15M34 47l18-10M40 6l12 12M52 6 40 18M8 40l2 12M14 39l-1 13'/%3E%3C/g%3E%3C/svg%3E");
-  background-repeat: repeat; background-size: 30mm 30mm; transform: rotate(-4deg) scale(1.15); }
+.card.mb > .mb-deco { position: absolute; inset: 0; overflow: hidden; pointer-events: none; border-radius: inherit; }
+.card.mb.mb-framed > .mb-deco { inset: 2.4mm; border-radius: 0; }
+.card.mb.mb-deco-tally .mb-deco { opacity: .055; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M8 8l1 16M13 7l0 17M18 8l-1 16M23 7l1 17M4 21l23-11M38 34l-1 15M43 33l1 16M48 34l0 15M34 47l18-10M40 6l12 12M52 6 40 18M8 40l2 12M14 39l-1 13'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 30mm 30mm repeat; }
 .card.mb.mb-deco-splatter .mb-deco { opacity: .085;
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='%23000'%3E%3Cpath d='M50 26c9-2 13 7 20 6 6 0 9 6 5 11-4 4 3 9-2 14-4 4-9 1-12 6-4 6-11 5-14 0-3-4-10-2-12-8-2-5 4-8 2-13-2-6 4-10 9-8 2 1 2-7 4-8Z'/%3E%3Ccircle cx='86' cy='22' r='4'/%3E%3Ccircle cx='17' cy='74' r='3'/%3E%3Ccircle cx='80' cy='80' r='2.5'/%3E%3Ccircle cx='24' cy='20' r='2'/%3E%3Ccircle cx='92' cy='55' r='1.6'/%3E%3Ccircle cx='8' cy='44' r='1.8'/%3E%3Ccircle cx='66' cy='93' r='1.5'/%3E%3Crect x='47' y='60' width='3.2' height='34' rx='1.6'/%3E%3Crect x='60' y='58' width='2.4' height='20' rx='1.2'/%3E%3C/g%3E%3C/svg%3E"),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='%23000'%3E%3Cpath d='M45 30c8-4 18 2 20 9 3 7 12 9 8 17-3 6-11 4-15 10-4 5-13 4-16-2-3-5-12-6-11-14 1-6 8-6 9-12 0-5 1-6 5-8Z'/%3E%3Ccircle cx='15' cy='30' r='3.5'/%3E%3Ccircle cx='84' cy='76' r='2.5'/%3E%3Ccircle cx='30' cy='84' r='2'/%3E%3Ccircle cx='76' cy='14' r='1.8'/%3E%3C/g%3E%3C/svg%3E");
-  background-size: 70% auto, 55% auto; background-position: 118% -8%, -16% 104%; }
-.ink-save .card.mb .mb-deco { opacity: .05; }
+  background-repeat: no-repeat; background-size: 70% auto, 55% auto; background-position: 118% -8%, -16% 104%; }
+.ink-save .card.mb.mb-deco-tally .mb-deco, .ink-save .card.mb.mb-deco-splatter .mb-deco { opacity: .045; }
 
 /* Reverso: inicial gótica gigante de fondo */
 .card-back.mb .mb-ghost {
-  right: -6mm; bottom: -14mm;
+  position: absolute; right: -6mm; bottom: -14mm;
   font-family: "UnifrakturCook", serif; font-weight: 700; font-size: 75cqw; line-height: 1; color: rgba(0,0,0,.06);
 }
-.card-back.mb.mb-framed .mb-ghost { right: -3mm; bottom: -11mm; }
+.card-back.mb.mb-framed .mb-ghost { right: -4mm; bottom: -12mm; }

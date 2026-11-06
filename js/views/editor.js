@@ -183,7 +183,7 @@ export async function editorView(root, id) {
   /** Aspecto de la carta MÖRK BORG: papel, marco y decoración de fondo. */
   function mbLookFields() {
     const seg = (key, options, fallback) => h('div', { class: `seg ${Object.keys(options).length > 3 ? 'seg-grid' : 'seg-fill'}` }, Object.entries(options).map(([k, label]) => {
-      const on = (m[key] || fallback) === k;
+      const on = (m[key] in options ? m[key] : fallback) === k;
       return h('button', { type: 'button', class: on ? 'on' : '', 'aria-pressed': on ? 'true' : 'false',
         onclick: () => { if (!on) { m[key] = k; changed(true); } } }, label);
     }));

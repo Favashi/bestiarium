@@ -190,17 +190,23 @@ function mbExtras(m) {
 }
 
 /** Clases y capa de decoración comunes a anverso y reverso MB. */
+const MB_DECO = m => (['initial', 'tally', 'splatter', 'none'].includes(m.mbDeco) ? m.mbDeco : 'initial');
 function mbLook(m) {
-  const deco = m.mbDeco || 'initial';
-  return ' mb' + (m.mbPaper === 'yellow' ? ' mb-yellow' : '') + (m.frame ? ' mb-framed' : '') + ` mb-deco-${deco}`;
+  return ' mb' + (m.mbPaper === 'yellow' ? ' mb-yellow' : '') + (m.frame ? ' mb-framed' : '') + ` mb-deco-${MB_DECO(m)}`;
 }
-const mbDecoLayer = m => (['skull', 'tally', 'splatter'].includes(m.mbDeco) ? '<span class="mb-deco" aria-hidden="true"></span>' : '');
+/** Capa de fondo recortada al interior del marco; en el reverso puede llevar la inicial gótica. */
+function mbDecoLayer(m, side) {
+  const deco = MB_DECO(m);
+  if (deco === 'none' || (deco === 'initial' && side === 'front')) return '';
+  const ghost = deco === 'initial' ? `<span class="mb-ghost">${esc((m.name || '?').trim().charAt(0).toUpperCase())}</span>` : '';
+  return `<span class="mb-deco" aria-hidden="true">${ghost}</span>`;
+}
 
 function renderMBFront(m) {
   const armor = has(m.armor) ? m.armor : 'Ninguna';
   const track = hpTrack(m, m.hp);
   const attacks = splitMBAttacks(m.attacks);
-  return shell('front', `${mbDecoLayer(m)}
+  return shell('front', `${mbDecoLayer(m, 'front')}
     <header class="mb-head">
       ${has(m.kind) ? `<p class="mb-kicker">${esc(m.kind)}</p>` : ''}
       <h1 class="mb-name">${esc(m.name)}</h1>
@@ -220,9 +226,7 @@ function renderMBFront(m) {
 }
 
 function renderMBBack(m) {
-  const initial = esc((m.name || '?').trim().charAt(0).toUpperCase());
-  return shell('back', `${mbDecoLayer(m)}
-    ${(m.mbDeco || 'initial') === 'initial' ? `<span class="mb-ghost" aria-hidden="true">${initial}</span>` : ''}
+  return shell('back', `${mbDecoLayer(m, 'back')}
     <header class="mb-head">
       ${has(m.kind) ? `<p class="mb-kicker">${esc(m.kind)}</p>` : ''}
       <h2 class="mb-name">${esc(m.name)}</h2>
