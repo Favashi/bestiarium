@@ -23,7 +23,7 @@
 
 @media print {
   html, body { background: #fff !important; margin: 0 !important; display: block !important; }
-  .topbar, .toast, .print-options, .page-label, .no-print, .site-foot { display: none !important; }
+  .topbar, .toast, .print-side, .print-options, .page-label, .no-print, .site-foot { display: none !important; }
   main { padding: 0 !important; max-width: none !important; }
   .print-layout { display: block !important; }
   .print-preview { display: block !important; gap: 0 !important; }

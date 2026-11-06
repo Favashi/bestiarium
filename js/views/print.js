@@ -138,7 +138,7 @@ export async function printView(root) {
 
   const backBox = h('div', { class: 'stack', style: { display: opts.backs ? '' : 'none' } },
     field('Volteo de la hoja', sel('flip', [['long', 'Por el borde largo (lo habitual)'], ['short', 'Por el borde corto']])),
-    h('div', { class: 'row two' }, field('Ajuste reverso X (mm)', num('backX', -10, 10, 0.25)), field('Ajuste reverso Y (mm)', num('backY', -10, 10, 0.25))),
+    h('div', { class: 'row two' }, field('Reverso X (mm)', num('backX', -10, 10, 0.25)), field('Reverso Y (mm)', num('backY', -10, 10, 0.25))),
     h('p', { class: 'hint' }, 'Si los reversos salen desplazados, corrige con los ajustes X/Y.'));
 
   const options = h('div', { class: 'print-options panel stack' },
@@ -161,7 +161,8 @@ export async function printView(root) {
     h('button', { class: 'btn primary', onclick: doPrint }, 'Imprimir / Guardar PDF'),
     h('p', { class: 'hint' }, 'En el diálogo elige escala 100 % («Tamaño real») y sin márgenes. En el móvil usa «Guardar como PDF» o Compartir → Imprimir.'));
 
-  root.append(h('div', { class: 'print-layout' }, options, preview));
+  // Columna lateral con su propio desplazamiento: las opciones de abajo quedan a mano aunque haya muchas hojas.
+  root.append(h('div', { class: 'print-layout' }, h('div', { class: 'print-side' }, options), preview));
 
   /** Lista expandida: cada monstruo repetido tantas veces como copias. */
   function chosenCards() {

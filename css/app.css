@@ -323,7 +323,11 @@ h2.view-title {
 
 /* ---------- Imprimir / ajustes ---------- */
 .print-layout { display: grid; grid-template-columns: 320px 1fr; gap: 28px; align-items: start; }
-.print-options { position: sticky; top: 92px; }
+/* La columna de opciones se queda fija y, si no cabe en la pantalla, se desplaza por dentro.
+   El relleno deja sitio a los rombos y al doble filete del panel, que sobresalen. */
+.print-side { position: sticky; top: 88px; max-height: calc(100dvh - 88px - 8px); overflow-y: auto; overscroll-behavior: contain;
+  padding: 8px 12px 12px; margin: -8px -12px 0; scrollbar-width: thin; }
+.print-options { position: relative; }
 .panel { background: var(--sheet); border: 2px solid var(--ink); outline: 1px solid var(--ink); outline-offset: 3px; margin: 4px; padding: 16px; }
 .row { display: grid; gap: 10px; }
 .row.two { grid-template-columns: 1fr 1fr; }
@@ -341,7 +345,7 @@ h2.view-title {
 .page-label { font-size: 12.5px; color: var(--muted); font-style: italic; }
 @media (max-width: 900px) {
   .print-layout { grid-template-columns: 1fr; }
-  .print-options { position: relative; top: auto; }
+  .print-side { position: static; max-height: none; overflow: visible; padding: 0; margin: 0; }
 }
 
 .settings { max-width: 680px; display: flex; flex-direction: column; gap: 22px; }
@@ -369,7 +373,7 @@ h2.view-title {
 }
 .group::before, .panel::before { left: -9px; }
 .group::after, .panel::after { right: -9px; }
-.panel:not(.print-options) { position: relative; } /* .print-options es sticky (también sirve de referencia para los rombos) */
+.panel { position: relative; } /* referencia para los rombos */
 /* Daga ante los títulos de sección */
 .group > header h3, .group > summary h3 { display: flex; align-items: center; gap: 10px; }
 .group > header h3::before {
