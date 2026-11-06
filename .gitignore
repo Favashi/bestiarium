@@ -15,3 +15,9 @@ dist/
 # Copias de seguridad exportadas desde la app
 bestiarium-*.json
 monstruos-*.json
+
+# PDFs de aventuras (material con copyright, no se publica)
+*.pdf
+
+# Importaciones privadas (sacadas de aventuras con copyright)
+imports/
