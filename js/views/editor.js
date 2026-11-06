@@ -1,12 +1,13 @@
 import { getCard, putCard, deleteCard } from '../store.js';
 import { getDecks, saveDecks, newDeck, countIn, setCount, purgeMonsters } from '../decks.js';
-import { CARD, ALIGNMENTS, SAVE_KEYS, SAVE_LABELS, SYSTEMS, derived, uid, isMB } from '../model.js';
+import { CARD, ALIGNMENTS, SAVE_KEYS, SAVE_LABELS, SYSTEMS, MB_DECOS, derived, uid, isMB } from '../model.js';
 import { renderFront, renderBack } from '../render.js';
 import { parseStatBlock, parseMBStatBlock } from '../parse.js';
 import { fitWhenReady } from '../fit.js';
 import { fileToDataURL, pickFile } from '../image.js';
 import { h, icon, scaled, toast, debounce, askText, confirmDialog } from '../ui.js';
 import { track } from '../analytics.js';
+import { applyTheme } from '../theme.js';
 
 export async function editorView(root, id) {
   let m = await getCard(id);
@@ -149,6 +150,7 @@ export async function editorView(root, id) {
       } }));
 
     const mb = isMB(m);
+    applyTheme(mb ? 'mb' : 'classic'); // mientras se edita, la app adopta el tema del sistema del monstruo
     const systemSeg = h('div', { class: 'seg seg-fill seg-system' }, Object.entries(SYSTEMS).map(([k, label]) =>
       h('button', { type: 'button', class: (m.system || 'ose') === k ? 'on' : '', 'aria-pressed': (m.system || 'ose') === k ? 'true' : 'false',
         onclick: () => {
@@ -174,7 +176,23 @@ export async function editorView(root, id) {
             : h('p', { class: 'hint' }, 'Mejor dibujos a línea en blanco y negro (PNG con fondo transparente o blanco).'),
           mb ? null : h('label', { class: 'check' },
             h('input', { type: 'checkbox', checked: !!m.frame, onchange: e => { m.frame = e.target.checked; changed(); } }),
-            'Marco OSR alrededor de la ilustración'))));
+            'Marco OSR alrededor de la ilustración'))),
+      mb ? mbLookFields() : null);
+  }
+
+  /** Aspecto de la carta MÖRK BORG: papel, marco y decoración de fondo. */
+  function mbLookFields() {
+    const seg = (key, options, fallback) => h('div', { class: `seg ${Object.keys(options).length > 3 ? 'seg-grid' : 'seg-fill'}` }, Object.entries(options).map(([k, label]) => {
+      const on = (m[key] || fallback) === k;
+      return h('button', { type: 'button', class: on ? 'on' : '', 'aria-pressed': on ? 'true' : 'false',
+        onclick: () => { if (!on) { m[key] = k; changed(true); } } }, label);
+    }));
+    return h('div', { class: 'stack' },
+      field('Papel', seg('mbPaper', { white: 'Blanco', yellow: 'Amarillo' }, 'white')),
+      field('Decoración de fondo', seg('mbDeco', MB_DECOS, 'initial')),
+      h('label', { class: 'check' },
+        h('input', { type: 'checkbox', checked: !!m.frame, onchange: e => { m.frame = e.target.checked; changed(); } }),
+        'Marco alrededor de la carta'));
   }
 
   function mbStats() {

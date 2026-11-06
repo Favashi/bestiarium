@@ -1,4 +1,4 @@
-// Tema de la interfaz: 'classic' (blanco y negro) o 'mb' (MÖRK BORG: amarillo y negro).
+// Tema de la interfaz: 'classic' (blanco y negro) o 'mb' (MÖRK BORG: blanco y negro con amarillo).
 // Se guarda en este navegador; index.html lo aplica antes de pintar para evitar parpadeos.
 const KEY = 'bestiarium-theme';
 

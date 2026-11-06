@@ -173,9 +173,11 @@ export function renderFace(m, side = 'front') {
 /** "Garras d6, Mordisco d8+1" o "Garras (d6)" → [{ what, dmg }] */
 function splitMBAttacks(text) {
   return splitAttacks(text).map(a => {
-    if (a.dmg) return a;
+    if (a.dmg && /\d*d\d/i.test(a.dmg)) return a;
+    // Un paréntesis sin dados es una nota («Mordisco d6 (×3)»): se queda junto al nombre.
+    const note = a.dmg ? ` (${a.dmg})` : '';
     const mt = a.what.match(/^(.*?)\s*((?:\d+)?d\d+(?:\s*[+\-−]\s*\d+)?)$/i);
-    return mt && mt[1] ? { what: mt[1], dmg: mt[2].replace(/\s+/g, '') } : a;
+    return mt && mt[1] ? { what: mt[1] + note, dmg: mt[2].replace(/\s+/g, '') } : { what: a.what + note, dmg: '' };
   });
 }
 
@@ -187,11 +189,18 @@ function mbExtras(m) {
     (has(m.treasureText) ? `<section>${mbTag('Botín')}<p>${md(m.treasureText)}</p></section>` : '');
 }
 
+/** Clases y capa de decoración comunes a anverso y reverso MB. */
+function mbLook(m) {
+  const deco = m.mbDeco || 'initial';
+  return ' mb' + (m.mbPaper === 'yellow' ? ' mb-yellow' : '') + (m.frame ? ' mb-framed' : '') + ` mb-deco-${deco}`;
+}
+const mbDecoLayer = m => (['skull', 'tally', 'splatter'].includes(m.mbDeco) ? '<span class="mb-deco" aria-hidden="true"></span>' : '');
+
 function renderMBFront(m) {
   const armor = has(m.armor) ? m.armor : 'Ninguna';
   const track = hpTrack(m, m.hp);
   const attacks = splitMBAttacks(m.attacks);
-  return shell('front', `
+  return shell('front', `${mbDecoLayer(m)}
     <header class="mb-head">
       ${has(m.kind) ? `<p class="mb-kicker">${esc(m.kind)}</p>` : ''}
       <h1 class="mb-name">${esc(m.name)}</h1>
@@ -207,13 +216,13 @@ function renderMBFront(m) {
       ${attacks.length ? `<section class="mb-attacks">${mbTag('Ataques')}${attacks.map(a =>
         `<div class="mb-atk"><span>${md(a.what)}</span>${a.dmg ? `<b>${esc(a.dmg)}</b>` : ''}</div>`).join('')}</section>` : ''}
       ${track ? '' : mbExtras(m)}
-    </div>`, ' mb');
+    </div>`, mbLook(m));
 }
 
 function renderMBBack(m) {
   const initial = esc((m.name || '?').trim().charAt(0).toUpperCase());
-  return shell('back', `
-    <span class="mb-ghost" aria-hidden="true">${initial}</span>
+  return shell('back', `${mbDecoLayer(m)}
+    ${(m.mbDeco || 'initial') === 'initial' ? `<span class="mb-ghost" aria-hidden="true">${initial}</span>` : ''}
     <header class="mb-head">
       ${has(m.kind) ? `<p class="mb-kicker">${esc(m.kind)}</p>` : ''}
       <h2 class="mb-name">${esc(m.name)}</h2>
@@ -222,5 +231,5 @@ function renderMBBack(m) {
       ${hpTrack(m, m.hp) ? mbExtras(m) : ''}
       ${has(m.description) ? `<section class="mb-desc"><p>${md(m.description)}</p></section>` : ''}
       ${has(m.notes) ? `<section>${mbTag('Notas')}<p>${md(m.notes)}</p></section>` : ''}
-    </div>`, ' mb');
+    </div>`, mbLook(m));
 }

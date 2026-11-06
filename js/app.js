@@ -29,6 +29,7 @@ async function route() {
   if (typeof cleanup === 'function') { try { await cleanup(); } catch (e) { console.error(e); } }
   cleanup = null;
   document.getElementById('page-style').textContent = '';
+  applyTheme(); // el editor cambia el tema según el monstruo; al salir vuelve el elegido en Ajustes
   const hash = location.hash || '#/';
   const r = routes.find(x => x.re.test(hash)) || routes[0];
   document.querySelectorAll('[data-nav]').forEach(a => a.classList.toggle('active', a.dataset.nav === r.nav));

@@ -170,76 +170,120 @@
 .card-back .back-head h2 { font-size: 8cqw; }
 
 /* =================== MÖRK BORG =================== */
-/* Amarillo y negro, nombre en gótica, datos a máquina y filetes trazados a mano. */
+/* Blanco y negro con el amarillo como subrayador (estilo DNGNGEN): nombre en gótica centrada,
+   etiquetas a máquina sobre amarillo, datos en celdas de filete fino. */
 .card.mb {
   --mb-yellow: #ffe82c;
-  --mb-rule: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 6' preserveAspectRatio='none'%3E%3Cpath d='M0 3.3 L19 2.7 L38 3.6 L57 2.9 L74 3.5 L96 2.3 L118 3.4 L139 2.8 L158 3.7 L179 2.6 L200 3.2' fill='none' stroke='%23000' stroke-width='1.2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
-  background: var(--mb-yellow);
+  --mb-hair: .25mm solid #000;
+  background: #fff;
   color: #000;
   font-family: "Space Mono", ui-monospace, monospace;
   border-radius: 2.5mm;
 }
-.ink-save .card.mb { background: #fff; }
 
-.card.mb .mb-head { flex: none; position: relative; padding: .6mm 0 2.4mm; margin-bottom: 2mm;
-  background: var(--mb-rule) bottom / 100% 1.4mm no-repeat; }
-.card.mb .mb-kicker { font-size: 3.3cqw; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; line-height: 1.2; margin-bottom: .6mm; }
+.card.mb .mb-head { flex: none; position: relative; text-align: center; padding: .4mm 0 2mm; margin-bottom: 2mm; border-bottom: var(--mb-hair); }
+.card.mb .mb-kicker { display: inline-block; font-size: 3cqw; line-height: 1.25; letter-spacing: .02em; margin-bottom: 1mm;
+  background: var(--mb-yellow); padding: .1mm 1.4mm 0; }
 .card.mb .mb-name {
   font-family: "UnifrakturCook", "Pirata One", serif; font-weight: 700;
-  font-size: 12.5cqw; line-height: .95; letter-spacing: 0; overflow-wrap: anywhere;
-  transform: rotate(-1.5deg); transform-origin: 0 100%;
+  font-size: 12cqw; line-height: .95; letter-spacing: 0; overflow-wrap: anywhere;
 }
 .card-back.mb .mb-name { font-size: 10cqw; }
 
-.card.mb .mb-top { flex: none; height: 37cqh; display: grid; grid-template-columns: 52% 1fr; column-gap: 3mm; margin-bottom: 2.4mm; }
-.card.mb .mb-portrait { position: relative; min-height: 0; overflow: hidden; }
+.card.mb .mb-top { flex: none; height: 37cqh; display: grid; grid-template-columns: 54% 1fr; grid-template-rows: minmax(0, 1fr); margin-bottom: 2.4mm; border-bottom: var(--mb-hair); }
+/* El fundido «multiplicar» va en el contenedor y no en la imagen: así el blanco del dibujo
+   desaparece sobre el papel amarillo también en Safari, donde filter/transform en la imagen
+   dejaban un recuadro más claro alrededor de la ilustración. */
+.card.mb .mb-portrait { position: relative; min-height: 0; overflow: hidden; border-right: var(--mb-hair); margin-bottom: 2mm; mix-blend-mode: multiply; }
 .card.mb .mb-portrait img {
-  position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain;
-  filter: grayscale(1) contrast(1.6); mix-blend-mode: multiply; user-select: none;
+  position: absolute; inset: 0 1.5mm 0 0; display: block; width: calc(100% - 1.5mm); height: 100%; object-fit: contain;
+  filter: grayscale(1) contrast(1.5) brightness(1.04); user-select: none;
 }
-.card.mb .ph { position: absolute; inset: 0; display: grid; place-items: center;
-  background: repeating-linear-gradient(-45deg, transparent 0 1.4mm, rgba(0,0,0,.12) 1.4mm 1.7mm); }
-.card.mb .ph span { font-family: "UnifrakturCook", serif; font-weight: 700; font-size: 34cqw; line-height: 1; opacity: .85; }
+.card.mb .ph { position: absolute; inset: 0 1.5mm 0 0; display: grid; place-items: center;
+  border: 0; border-radius: 0; background: repeating-linear-gradient(-45deg, transparent 0 1.4mm, rgba(0,0,0,.1) 1.4mm 1.6mm); }
+.card.mb .ph span { font-family: "UnifrakturCook", serif; font-weight: 700; font-size: 34cqw; line-height: 1; }
 
-.card.mb .mb-stats { align-self: center; display: flex; flex-direction: column; gap: 1.6mm; }
-.card.mb .mb-stats > div { display: flex; flex-direction: column; padding-bottom: 1.2mm;
-  background: var(--mb-rule) bottom / 100% 1mm no-repeat; }
-.card.mb .mb-stats dt { font-size: 3cqw; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; line-height: 1.1; }
-.card.mb .mb-stats dd { font-size: 6.4cqw; font-weight: 700; line-height: 1.05; overflow-wrap: anywhere; }
+/* Datos: celdas apiladas, etiqueta amarilla arriba y valor en negrita debajo, centrados */
+.card.mb .mb-stats { display: flex; flex-direction: column; justify-content: center; min-height: 0; margin: 0; padding-bottom: 1.6mm; }
+.card.mb .mb-stats > div { display: flex; flex-direction: column; align-items: center; text-align: center; padding: .8mm 0 .9mm 1.5mm; }
+.card.mb .mb-stats > div + div { border-top: var(--mb-hair); }
+.card.mb .mb-stats dt { font-size: 2.9cqw; line-height: 1.25; letter-spacing: .02em; background: var(--mb-yellow); padding: 0 1.2mm; margin-bottom: .6mm; }
+.card.mb .mb-stats dd { margin: 0; font-family: "Jost", sans-serif; font-size: 6.1cqw; font-weight: 700; line-height: 1.05; overflow-wrap: anywhere; }
 
-/* Etiqueta de sección: losa negra con letra amarilla, ligeramente torcida */
+/* Etiqueta de sección: subrayador amarillo, minúscula de máquina */
 .card.mb .mb-tag {
-  display: inline-block; margin: 0 0 .5em; padding: .12em .45em .1em;
-  background: #000; color: var(--mb-yellow);
-  font-family: "Space Mono", monospace; font-weight: 700; font-size: .95em; text-transform: uppercase; letter-spacing: .1em; line-height: 1.25;
-  transform: rotate(-1.2deg);
+  display: inline-block; margin: 0 0 .45em; padding: .08em .45em 0;
+  background: var(--mb-yellow); color: #000;
+  font-family: "Space Mono", monospace; font-weight: 400; font-size: .86em; letter-spacing: .02em; line-height: 1.3;
 }
-.ink-save .card.mb .mb-tag { color: #fff; }
 
 .card.mb .mb-body { font-variant-numeric: lining-nums; font-family: "Alegreya", Georgia, serif; font-size: calc(var(--fs) * 1.08); line-height: 1.22; text-align: left; hyphens: auto; }
 .card.mb .mb-body section { margin-top: .9em; }
 .card.mb .mb-body > :first-child { margin-top: 0; }
 .card.mb .entry b { font-family: "Space Mono", monospace; font-size: .86em; text-transform: uppercase; letter-spacing: .04em; }
 
-.card.mb .mb-attacks .mb-atk { display: flex; align-items: baseline; gap: 1.2mm; padding: .2em 0 .35em;
-  background: var(--mb-rule) bottom / 100% .8mm no-repeat; font-family: "Space Mono", monospace; font-size: .92em; text-transform: uppercase; }
+.card.mb .mb-attacks .mb-atk { display: flex; align-items: baseline; gap: 1.2mm; padding: .25em 0 .3em;
+  border-bottom: var(--mb-hair); font-family: "Jost", sans-serif; font-weight: 600; font-size: .98em; }
 .card.mb .mb-atk span { flex: 1; min-width: 0; }
-.card.mb .mb-atk b { flex: none; font-size: 1.35em; line-height: 1; text-transform: none; }
+.card.mb .mb-atk b { flex: none; font-family: "Space Mono", monospace; font-size: 1.15em; line-height: 1; text-transform: none; }
 
 .card.mb .mb-desc p { font-size: 1.12em; line-height: 1.25; }
 .card.mb .mb-desc p::first-letter { font-family: "UnifrakturCook", serif; font-weight: 700; font-size: 2.6em; float: left; line-height: .8; margin: .08em .1em 0 0; }
 
 .card.mb .hp-track { margin-bottom: 2.6mm; }
-.card.mb .hp-track .sec { font-family: "Space Mono", monospace; font-size: 3.1cqw; letter-spacing: .12em; border: 0; padding-bottom: 0;
-  background: none; display: inline-block; color: var(--mb-yellow); background-color: #000; padding: .3mm 1.2mm; transform: rotate(-1deg); }
-.ink-save .card.mb .hp-track .sec { color: #fff; }
+.card.mb .hp-track .sec { font-family: "Space Mono", monospace; font-size: 3cqw; font-weight: 400; letter-spacing: .02em; text-transform: none; border: 0;
+  display: inline-block; color: #000; background: var(--mb-yellow); padding: .2mm 1.2mm 0; }
 .card.mb .hp-track .sec small { font-family: "Space Mono", monospace; }
 .card.mb .hp-n { font-family: "Space Mono", monospace; }
-.card.mb .hp-boxes i { border-color: #000; border-radius: 0; background: rgba(255,255,255,.35); }
+.card.mb .hp-boxes i { border-color: #000; border-radius: 0; background: #fff; }
+
+/* Ahorro de tinta: el amarillo pasa a ser un recuadro de filete */
+.ink-save .card.mb .mb-tag, .ink-save .card.mb .mb-kicker, .ink-save .card.mb .mb-stats dt, .ink-save .card.mb .hp-track .sec {
+  background: none; box-shadow: inset 0 0 0 .2mm #000; }
+
+/* Papel amarillo: las etiquetas se invierten (losa negra con letra amarilla) */
+.card.mb.mb-yellow { background: var(--mb-yellow); }
+.card.mb.mb-yellow .mb-tag, .card.mb.mb-yellow .mb-kicker, .card.mb.mb-yellow .mb-stats dt, .card.mb.mb-yellow .hp-track .sec {
+  background: #000; color: var(--mb-yellow); }
+.card.mb.mb-yellow .hp-boxes i { background: rgba(255,255,255,.4); }
+.ink-save .card.mb.mb-yellow { background: #fff; }
+.ink-save .card.mb.mb-yellow .mb-tag, .ink-save .card.mb.mb-yellow .mb-kicker,
+.ink-save .card.mb.mb-yellow .mb-stats dt, .ink-save .card.mb.mb-yellow .hp-track .sec { background: none; color: #000; }
+
+/* Marco: filete grueso con otro fino por dentro, recto y sin adornos */
+.card.mb.mb-framed { --pad: 5.2mm; }
+.card.mb.mb-framed::before {
+  content: ""; position: absolute; inset: 1.7mm; pointer-events: none;
+  border: .7mm solid #000;
+  background:
+    linear-gradient(#000, #000) top .5mm left .5mm / calc(100% - 1mm) .2mm no-repeat,
+    linear-gradient(#000, #000) bottom .5mm left .5mm / calc(100% - 1mm) .2mm no-repeat,
+    linear-gradient(#000, #000) top .5mm left .5mm / .2mm calc(100% - 1mm) no-repeat,
+    linear-gradient(#000, #000) top .5mm right .5mm / .2mm calc(100% - 1mm) no-repeat;
+}
+
+/* Decoraciones de fondo (dibujos propios, muy tenues). La capa va primero en el DOM y el
+   contenido se posiciona sin z-index, para no crear contextos de apilamiento que romperían
+   el fundido de la ilustración. */
+.card.mb > * { position: relative; }
+.card.mb > .mb-deco, .card.mb > .mb-ghost { position: absolute; pointer-events: none; }
+.card.mb .mb-deco { inset: 0; opacity: .075; background-repeat: no-repeat; }
+.card.mb.mb-deco-skull .mb-deco {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 110'%3E%3Cpath fill-rule='evenodd' d='M50 4C23 5 7 23 8 47c1 15 7 24 16 29l-1 16c0 7 6 11 12 11h30c6 0 12-4 12-11l-1-16c9-5 16-15 16-30C92 22 76 3 50 4ZM21 51c0-8 6-14 13-13 7 0 12 7 11 15-1 7-7 11-13 11-7 0-11-6-11-13Zm34 2c-1-8 4-15 11-15 7-1 13 5 13 13 0 7-4 13-11 13-6 0-12-4-13-11ZM50 63l-7 15h14ZM36 85h3v16h-3Zm9 0h3v17h-3Zm9 0h3v17h-3Zm9 0h3v16h-3Z'/%3E%3Cpath d='M47 5l-3 9 5 6-4 8' fill='none' stroke='%23fff' stroke-width='1.6'/%3E%3C/svg%3E");
+  background-size: 92% auto; background-position: 50% 112%; transform: rotate(-6deg); }
+.card.mb.mb-deco-tally .mb-deco { opacity: .055;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M8 8l1 16M13 7l0 17M18 8l-1 16M23 7l1 17M4 21l23-11M38 34l-1 15M43 33l1 16M48 34l0 15M34 47l18-10M40 6l12 12M52 6 40 18M8 40l2 12M14 39l-1 13'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat; background-size: 30mm 30mm; transform: rotate(-4deg) scale(1.15); }
+.card.mb.mb-deco-splatter .mb-deco { opacity: .085;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='%23000'%3E%3Cpath d='M50 26c9-2 13 7 20 6 6 0 9 6 5 11-4 4 3 9-2 14-4 4-9 1-12 6-4 6-11 5-14 0-3-4-10-2-12-8-2-5 4-8 2-13-2-6 4-10 9-8 2 1 2-7 4-8Z'/%3E%3Ccircle cx='86' cy='22' r='4'/%3E%3Ccircle cx='17' cy='74' r='3'/%3E%3Ccircle cx='80' cy='80' r='2.5'/%3E%3Ccircle cx='24' cy='20' r='2'/%3E%3Ccircle cx='92' cy='55' r='1.6'/%3E%3Ccircle cx='8' cy='44' r='1.8'/%3E%3Ccircle cx='66' cy='93' r='1.5'/%3E%3Crect x='47' y='60' width='3.2' height='34' rx='1.6'/%3E%3Crect x='60' y='58' width='2.4' height='20' rx='1.2'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='%23000'%3E%3Cpath d='M45 30c8-4 18 2 20 9 3 7 12 9 8 17-3 6-11 4-15 10-4 5-13 4-16-2-3-5-12-6-11-14 1-6 8-6 9-12 0-5 1-6 5-8Z'/%3E%3Ccircle cx='15' cy='30' r='3.5'/%3E%3Ccircle cx='84' cy='76' r='2.5'/%3E%3Ccircle cx='30' cy='84' r='2'/%3E%3Ccircle cx='76' cy='14' r='1.8'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 70% auto, 55% auto; background-position: 118% -8%, -16% 104%; }
+.ink-save .card.mb .mb-deco { opacity: .05; }
 
 /* Reverso: inicial gótica gigante de fondo */
 .card-back.mb .mb-ghost {
-  position: absolute; right: -6mm; bottom: -14mm; z-index: 0; pointer-events: none;
-  font-family: "UnifrakturCook", serif; font-weight: 700; font-size: 75cqw; line-height: 1; color: rgba(0,0,0,.08);
+  right: -6mm; bottom: -14mm;
+  font-family: "UnifrakturCook", serif; font-weight: 700; font-size: 75cqw; line-height: 1; color: rgba(0,0,0,.06);
 }
-.card-back.mb > :not(.mb-ghost) { position: relative; z-index: 1; }
+.card-back.mb.mb-framed .mb-ghost { right: -3mm; bottom: -11mm; }

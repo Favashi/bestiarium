@@ -12,6 +12,9 @@ export const SAVE_LABELS = {
   s: { short: 'S', long: 'Sortilegios / bastones' },
 };
 
+/** Decoraciones de fondo de las cartas MÖRK BORG (dibujos propios, no el logotipo). */
+export const MB_DECOS = { none: 'Ninguna', initial: 'Inicial', skull: 'Calavera', tally: 'Tachones', splatter: 'Manchas' };
+
 export const ALIGNMENTS = ['Legal', 'Neutral', 'Caótico'];
 
 /** Sistemas de juego. 'ose' = Old-School Essentials / La Marca del Este; 'mb' = MÖRK BORG. */
@@ -37,7 +40,9 @@ export function newMonster(overrides = {}) {
     imageX: 50,
     imageY: 50,
     imageZoom: 1,
-    frame: false,       // marco OSR alrededor de la ilustración
+    frame: false,       // OSE: marco alrededor de la ilustración · MB: marco alrededor de la carta
+    mbPaper: 'white',   // MÖRK BORG: 'white' | 'yellow'
+    mbDeco: 'initial',  // MÖRK BORG: decoración de fondo (ver MB_DECOS)
     hpBoxes: false,     // casillas para marcar PG
     hpRows: 1,          // una fila de casillas por cada monstruo
     // Bloque de estadísticas (vacío = calculado automáticamente cuando se puede)

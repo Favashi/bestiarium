@@ -68,7 +68,7 @@ export async function settingsView(root) {
   root.append(h('div', { class: 'settings' },
     h('h2', { class: 'view-title' }, 'Ajustes'),
     section('Tema de la app',
-      h('p', { class: 'muted' }, 'Cambia el aspecto de la interfaz. Con el tema Mörk Borg, los monstruos nuevos se crean para Mörk Borg (puedes cambiar el sistema de cada uno en el editor).'),
+      h('p', { class: 'muted' }, 'Aspecto de la biblioteca, la impresión y los ajustes. Con el tema Mörk Borg, los monstruos nuevos se crean para Mörk Borg. En el editor, la app adopta siempre el tema del sistema del monstruo que editas.'),
       themeSeg()),
     section('Tutorial',
       h('p', { class: 'muted' }, 'Un recorrido rápido por cómo crear monstruos, organizar mazos e imprimir.'),
