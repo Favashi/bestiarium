@@ -13,7 +13,7 @@ const ICON = {
 
 const STEPS = [
   { icon: 'skull', title: 'Bienvenido a Bestiarium',
-    text: ['Crea cartas de monstruos tamaño tarot para **Old-School Essentials** y **Aventuras en la Marca del Este**, con anverso y reverso, listas para imprimir.',
+    text: ['Crea cartas de monstruos tamaño tarot para **Old-School Essentials**, **Aventuras en la Marca del Este** y **Mörk Borg**, con anverso y reverso, listas para imprimir.',
       'Funciona en el móvil y en el ordenador, incluso sin conexión. Este recorrido dura un minuto.'] },
   { icon: 'quill', title: 'Crea un monstruo',
     text: ['Pulsa **+ Nuevo monstruo** en el Bestiario y rellena el formulario. Escribe los **DG** y la app calcula PG, TAC0, salvaciones y PX con las tablas B/X (los campos marcados como *auto*).',

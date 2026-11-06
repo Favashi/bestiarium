@@ -1,7 +1,7 @@
 {
   "name": "Bestiarium",
   "short_name": "Bestiarium",
-  "description": "Cartas de monstruos para OSE y Aventuras en la Marca del Este.",
+  "description": "Cartas de monstruos para OSE, Aventuras en la Marca del Este y MÖRK BORG.",
   "lang": "es",
   "start_url": "./",
   "scope": "./",

@@ -1,6 +1,6 @@
 // Service worker: precachea la app para que funcione sin conexión.
 // Cambia VERSION cada vez que publiques cambios para forzar la actualización.
-const VERSION = 'v19';
+const VERSION = 'v20';
 const CACHE = `bestiario-${VERSION}`;
 
 const ASSETS = [
@@ -9,13 +9,15 @@ const ASSETS = [
   'manifest.webmanifest',
   'css/fonts.css', 'css/app.css', 'css/cards.css', 'css/print.css',
   'js/app.js', 'js/model.js', 'js/store.js', 'js/render.js', 'js/fit.js', 'js/ui.js',
-  'js/io.js', 'js/image.js', 'js/samples.js', 'js/state.js', 'js/parse.js', 'js/decks.js', 'js/credits.js', 'js/tutorial.js', 'js/analytics.js',
+  'js/io.js', 'js/image.js', 'js/samples.js', 'js/state.js', 'js/parse.js', 'js/decks.js', 'js/credits.js', 'js/tutorial.js', 'js/analytics.js', 'js/theme.js',
   'js/views/library.js', 'js/views/editor.js', 'js/views/print.js', 'js/views/settings.js', 'js/views/credits.js',
   'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png',
   'fonts/pirata-one-latin-400-normal.woff2',
   'fonts/oswald-latin-500-normal.woff2', 'fonts/oswald-latin-700-normal.woff2',
   'fonts/jost-latin-400-normal.woff2', 'fonts/jost-latin-400-italic.woff2',
   'fonts/jost-latin-600-normal.woff2', 'fonts/jost-latin-700-normal.woff2',
+  'fonts/UnifrakturCook-Bold.woff2', 'fonts/SpaceMono-Regular.woff2', 'fonts/SpaceMono-Bold.woff2',
+  'fonts/Alegreya-Variable.woff2', 'fonts/Alegreya-Italic-Variable.woff2',
 ];
 
 self.addEventListener('install', event => {

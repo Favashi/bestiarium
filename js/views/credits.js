@@ -25,13 +25,18 @@ export function creditsView(root, { focusApps = false } = {}) {
       h('p', {}, 'Las cartas siguen el formato de los bloques de monstruo de ',
         h('i', {}, 'Old-School Essentials'), ' y de ', h('i', {}, 'Aventuras en la Marca del Este'),
         '. Los cálculos automáticos (TAC0, salvaciones, PX) usan las tablas de la edición B/X.'),
-      h('p', { class: 'fine' }, 'Proyecto de aficionado, no oficial y sin afiliación. Old-School Essentials es marca de Necrotic Gnome; Aventuras en la Marca del Este y el resto de marcas citadas pertenecen a sus respectivos propietarios.')),
+      h('p', {}, 'Las cartas de Mörk Borg siguen el formato de sus bloques de monstruo (Vida, Moral, Armadura, ataques y Especial). El tema visual es un homenaje a su estética: tipografías libres, sin usar el logotipo ni el arte del juego.'),
+      h('p', { class: 'fine' }, 'Proyecto de aficionado, no oficial y sin afiliación. Old-School Essentials es marca de Necrotic Gnome; Aventuras en la Marca del Este y el resto de marcas citadas pertenecen a sus respectivos propietarios.'),
+      h('p', { class: 'fine' }, 'Bestiarium es una producción independiente de ', c.author, ' y no está afiliada a Ockult Örtmästare Games ni a Stockholm Kartell. Se publica bajo la licencia de terceros de MÖRK BORG. MÖRK BORG es © 2019 Ockult Örtmästare Games y Stockholm Kartell.')),
 
     section('Tipografías',
       h('dl', {},
         row('Pirata One', 'Rodrigo Fuenzalida y Nicolás Massi · SIL Open Font License'),
         row('Oswald', 'Vernon Adams y colaboradores · SIL Open Font License'),
-        row('Jost', 'Owen Earl (indestructible type*) · SIL Open Font License'))),
+        row('Jost', 'Owen Earl (indestructible type*) · SIL Open Font License'),
+        row('UnifrakturCook', 'j. \'mach\' wust · SIL Open Font License'),
+        row('Space Mono', 'Colophon Foundry · SIL Open Font License'),
+        row('Alegreya', 'Juan Pablo del Peral (Huerta Tipográfica) · SIL Open Font License'))),
 
     section('Privacidad',
       h('p', {}, 'Tus monstruos y mazos se guardan solo en tu dispositivo. Las visitas se cuentan de forma anónima con GoatCounter (sin cookies); puedes desactivarlo en Ajustes.')),
@@ -40,6 +45,6 @@ export function creditsView(root, { focusApps = false } = {}) {
       h('p', {}, 'El código de Bestiarium se distribuye bajo licencia MIT. Las tipografías mantienen su propia licencia (SIL OFL 1.1).')),
 
     section('Ejemplos',
-      h('p', {}, 'Las estadísticas de los monstruos de ejemplo son mecánicas genéricas B/X; las descripciones son originales.'))));
+      h('p', {}, 'Las estadísticas de los monstruos de ejemplo son mecánicas genéricas B/X o de Mörk Borg; las descripciones son originales.'))));
   if (focusApps) requestAnimationFrame(() => document.getElementById('apps')?.scrollIntoView({ block: 'start' }));
 }

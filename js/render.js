@@ -1,5 +1,5 @@
 // Renderizado de la carta de monstruo (tarot, blanco y negro). Medidas físicas en mm.
-import { CARD, SAVE_KEYS, SAVE_LABELS, derived } from './model.js';
+import { CARD, SAVE_KEYS, SAVE_LABELS, derived, isMB } from './model.js';
 
 export function esc(s) {
   return String(s ?? '')
@@ -18,8 +18,8 @@ export function md(s) {
 const has = v => v !== undefined && v !== null && String(v).trim() !== '';
 const row = (label, value) => has(value) ? `<div><dt>${esc(label)}</dt><dd>${esc(value)}</dd></div>` : '';
 
-function shell(side, inner) {
-  return `<div class="card card-${side}" style="--w:${CARD.w}mm;--h:${CARD.h}mm">${inner}</div>`;
+function shell(side, inner, extra = '') {
+  return `<div class="card card-${side}${extra}" style="--w:${CARD.w}mm;--h:${CARD.h}mm">${inner}</div>`;
 }
 
 function portrait(m) {
@@ -80,7 +80,8 @@ function hpTrack(m, hp) {
   const boxes = groups.join('');
   const blocks = Array.from({ length: rows }, (_, r) =>
     `<div class="hp-row">${rows > 1 ? `<span class="hp-n">${r + 1}</span>` : ''}<div class="hp-boxes">${boxes}</div></div>`).join('');
-  return `<div class="hp-track"><h3 class="sec">Puntos de golpe${rows > 1 ? ` <small>· ${rows} criaturas</small>` : ''}</h3><div class="hp-grid" style="--hp-cols:${cols}">${blocks}</div></div>`;
+  const label = isMB(m) ? 'Vida' : 'Puntos de golpe';
+  return `<div class="hp-track"><h3 class="sec">${label}${rows > 1 ? ` <small>· ${rows} criaturas</small>` : ''}</h3><div class="hp-grid" style="--hp-cols:${cols}">${blocks}</div></div>`;
 }
 
 /** Separa "2 × garras (1d4), 1 × mordisco (1d8)" en ataques, respetando paréntesis. */
@@ -120,6 +121,7 @@ function entriesHTML(list) {
 }
 
 export function renderFront(m) {
+  if (isMB(m)) return renderMBFront(m);
   const d = derived(m);
   const subtitle = [m.alignment, m.kind].filter(has).join(' · ');
   const saves = SAVE_KEYS.map(k => row(SAVE_LABELS[k].short, d.saves[k])).join('');
@@ -151,6 +153,7 @@ export function renderFront(m) {
 }
 
 export function renderBack(m) {
+  if (isMB(m)) return renderMBBack(m);
   return shell('back', `
     <header class="back-head">${[m.alignment, m.kind].filter(has).length ? `<p>${esc([m.alignment, m.kind].filter(has).join(' · '))}</p>` : ''}<h2>${esc(m.name)}</h2></header>
     <div class="fit back-body">
@@ -162,4 +165,62 @@ export function renderBack(m) {
 
 export function renderFace(m, side = 'front') {
   return side === 'back' ? renderBack(m) : renderFront(m);
+}
+
+// =================== MÖRK BORG ===================
+// Carta amarilla y negra: nombre en gótica, datos a máquina, filetes trazados a mano.
+
+/** "Garras d6, Mordisco d8+1" o "Garras (d6)" → [{ what, dmg }] */
+function splitMBAttacks(text) {
+  return splitAttacks(text).map(a => {
+    if (a.dmg) return a;
+    const mt = a.what.match(/^(.*?)\s*((?:\d+)?d\d+(?:\s*[+\-−]\s*\d+)?)$/i);
+    return mt && mt[1] ? { what: mt[1], dmg: mt[2].replace(/\s+/g, '') } : a;
+  });
+}
+
+const mbTag = t => `<h3 class="mb-tag">${esc(t)}</h3>`;
+
+function mbExtras(m) {
+  const abilities = entriesHTML(m.abilities);
+  return (abilities ? `<section>${mbTag('Especial')}${abilities}</section>` : '') +
+    (has(m.treasureText) ? `<section>${mbTag('Botín')}<p>${md(m.treasureText)}</p></section>` : '');
+}
+
+function renderMBFront(m) {
+  const armor = has(m.armor) ? m.armor : 'Ninguna';
+  const track = hpTrack(m, m.hp);
+  const attacks = splitMBAttacks(m.attacks);
+  return shell('front', `
+    <header class="mb-head">
+      ${has(m.kind) ? `<p class="mb-kicker">${esc(m.kind)}</p>` : ''}
+      <h1 class="mb-name">${esc(m.name)}</h1>
+    </header>
+    <div class="mb-top">
+      <div class="mb-portrait">${portrait(m)}</div>
+      <dl class="mb-stats">
+        ${row('Vida', m.hp)}${row('Moral', m.morale)}${row('Armadura', armor)}${row('Aparecen', m.appearing)}
+      </dl>
+    </div>
+    ${track}
+    <div class="body fit mb-body">
+      ${attacks.length ? `<section class="mb-attacks">${mbTag('Ataques')}${attacks.map(a =>
+        `<div class="mb-atk"><span>${md(a.what)}</span>${a.dmg ? `<b>${esc(a.dmg)}</b>` : ''}</div>`).join('')}</section>` : ''}
+      ${track ? '' : mbExtras(m)}
+    </div>`, ' mb');
+}
+
+function renderMBBack(m) {
+  const initial = esc((m.name || '?').trim().charAt(0).toUpperCase());
+  return shell('back', `
+    <span class="mb-ghost" aria-hidden="true">${initial}</span>
+    <header class="mb-head">
+      ${has(m.kind) ? `<p class="mb-kicker">${esc(m.kind)}</p>` : ''}
+      <h2 class="mb-name">${esc(m.name)}</h2>
+    </header>
+    <div class="fit back-body mb-body">
+      ${hpTrack(m, m.hp) ? mbExtras(m) : ''}
+      ${has(m.description) ? `<section class="mb-desc"><p>${md(m.description)}</p></section>` : ''}
+      ${has(m.notes) ? `<section>${mbTag('Notas')}<p>${md(m.notes)}</p></section>` : ''}
+    </div>`, ' mb');
 }

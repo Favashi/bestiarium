@@ -7,6 +7,7 @@ import { h, toast, download, confirmDialog } from '../ui.js';
 import { state } from '../state.js';
 import { openTutorial } from '../tutorial.js';
 import { track, optedOut, setEnabled } from '../analytics.js';
+import { getTheme, setTheme } from '../theme.js';
 
 export async function settingsView(root) {
   const storageInfo = h('p', { class: 'muted' }, '');
@@ -52,11 +53,23 @@ export async function settingsView(root) {
     toast('Todo borrado');
   }
 
+  function themeSeg() {
+    const wrap = h('div', { class: 'seg seg-fill', role: 'group', 'aria-label': 'Tema' });
+    const fill = () => wrap.replaceChildren(...[['classic', 'Clásico'], ['mb', 'Mörk Borg']].map(([k, label]) =>
+      h('button', { type: 'button', class: getTheme() === k ? 'on' : '', 'aria-pressed': getTheme() === k ? 'true' : 'false',
+        onclick: () => { setTheme(k); track(`tema-${k}`, `Tema ${label}`); fill(); } }, label)));
+    fill();
+    return wrap;
+  }
+
   const lastBackup = await getMeta('lastBackup');
   const section = (title, ...children) => h('section', { class: 'group' }, h('header', {}, h('h3', {}, title)), children);
 
   root.append(h('div', { class: 'settings' },
     h('h2', { class: 'view-title' }, 'Ajustes'),
+    section('Tema de la app',
+      h('p', { class: 'muted' }, 'Cambia el aspecto de la interfaz. Con el tema Mörk Borg, los monstruos nuevos se crean para Mörk Borg (puedes cambiar el sistema de cada uno en el editor).'),
+      themeSeg()),
     section('Tutorial',
       h('p', { class: 'muted' }, 'Un recorrido rápido por cómo crear monstruos, organizar mazos e imprimir.'),
       h('button', { class: 'btn primary', onclick: () => openTutorial() }, 'Ver tutorial')),

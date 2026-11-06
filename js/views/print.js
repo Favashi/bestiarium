@@ -15,7 +15,7 @@ const PAPERS = {
 
 const DEFAULTS = {
   source: 'all', paper: 'a4', orient: 'auto', margin: 6, gap: 0,
-  cutmarks: true, square: false, backs: true, flip: 'long', backX: 0, backY: 0,
+  cutmarks: true, square: false, inkSave: false, backs: true, flip: 'long', backX: 0, backY: 0,
 };
 
 function capacity(pw, ph, cw, ch, m, g) {
@@ -148,6 +148,7 @@ export async function printView(root) {
     h('div', { class: 'row two' }, field('Margen (mm)', num('margin', 0, 30)), field('Separación (mm)', num('gap', 0, 10))),
     chk('cutmarks', 'Líneas de corte'),
     chk('square', 'Esquinas rectas (más fácil de recortar)'),
+    chk('inkSave', 'Mörk Borg con fondo blanco (ahorra tinta)'),
     chk('backs', 'Imprimir reversos (doble cara)'),
     backBox,
     summary,
@@ -173,7 +174,7 @@ export async function printView(root) {
     const ph = orient === 'landscape' ? paper.w : paper.h;
     document.getElementById('page-style').textContent = `@page { size: ${pw}mm ${ph}mm; margin: 0; }`;
 
-    const cls = [opts.cutmarks && 'cutmarks', opts.square && 'square'].filter(Boolean).join(' ');
+    const cls = [opts.cutmarks && 'cutmarks', opts.square && 'square', opts.inkSave && 'ink-save'].filter(Boolean).join(' ');
     const sheets = [];
     const warnings = [];
 

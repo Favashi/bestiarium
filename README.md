@@ -1,7 +1,7 @@
 # Bestiarium
 
-Cartas de monstruos tamaño tarot (70 × 120 mm), con anverso y reverso, para **Old-School Essentials** y
-**Aventuras en la Marca del Este**. Es una app web instalable (PWA) que funciona sin conexión en el móvil y en el
+Cartas de monstruos tamaño tarot (70 × 120 mm), con anverso y reverso, para **Old-School Essentials**,
+**Aventuras en la Marca del Este** y **MÖRK BORG**. Es una app web instalable (PWA) que funciona sin conexión en el móvil y en el
 ordenador. No necesita servidor, cuenta ni compilación.
 
 ![Editor con vista previa del anverso y el reverso](docs/editor.png)
@@ -23,6 +23,10 @@ ordenador. No necesita servidor, cuenta ni compilación.
     habilidades y el tesoro pasan al reverso.
   - **Reverso:** descripción y notas del DJ.
   - **Ajuste del texto:** el tamaño de letra se adapta solo para que todo quepa.
+- **MÖRK BORG:** cada monstruo elige su sistema en el editor. Los de Mörk Borg usan su bloque (Vida, Moral,
+  Armadura, ataques con dado, Especial y Botín), una carta propia en amarillo y negro y un lector de bloques pegados
+  en castellano o inglés. Al imprimir puedes ponerles fondo blanco para ahorrar tinta.
+- **Temas:** Clásico (blanco y negro) o Mörk Borg (amarillo y negro, gótica y máquina de escribir), desde Ajustes.
 - **Mazos:** un mazo es una lista de monstruos con el número de copias de cada uno, y un monstruo puede estar en
   varios mazos.
 - **Impresión:** a doble cara en A4, Carta o A3, con 4 cartas por hoja A4 y reversos colocados en espejo para el
@@ -95,9 +99,10 @@ js/
   store.js              IndexedDB
   io.js                 Importar / exportar JSON
   tutorial.js           Tutorial de bienvenida
+  theme.js              Tema de la interfaz (Clásico / Mörk Borg)
   credits.js            Datos de los créditos (edítalos aquí)
   views/                Biblioteca, editor, impresión, ajustes y créditos
-fonts/                  Oswald, Jost y Pirata One (woff2) y sus licencias
+fonts/                  Oswald, Jost, Pirata One, UnifrakturCook, Space Mono y Alegreya (woff2) y sus licencias
 icons/                  Icono de la app (SVG y PNG)
 docs/                   Capturas para este README
 ```
@@ -124,10 +129,15 @@ docs/                   Capturas para este README
 
 - **Código:** [MIT](LICENSE).
 - **Fuentes:** [SIL Open Font License 1.1](fonts/licenses/): Oswald (The Oswald Project Authors), Jost (The Jost
-  Project Authors) y Pirata One (Rodrigo Fuenzalida y Nicolás Massi).
+  Project Authors), Pirata One (Rodrigo Fuenzalida y Nicolás Massi), UnifrakturCook (j. 'mach' wust), Space Mono
+  (The Space Mono Project Authors) y Alegreya (The Alegreya Project Authors).
 
 ## Aviso
 
 Proyecto de aficionado, no oficial y sin afiliación. *Old-School Essentials* es marca de Necrotic Gnome; *Aventuras
 en la Marca del Este* y el resto de marcas citadas pertenecen a sus respectivos propietarios. Los monstruos de ejemplo
-usan mecánicas genéricas B/X con descripciones originales.
+usan mecánicas genéricas B/X o de Mörk Borg con descripciones originales.
+
+Bestiarium es una producción independiente de Toni Ruiz y no está afiliada a Ockult Örtmästare Games ni a Stockholm
+Kartell. Se publica bajo la licencia de terceros de MÖRK BORG. MÖRK BORG es © 2019 Ockult Örtmästare Games y
+Stockholm Kartell.

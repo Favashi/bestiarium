@@ -1,5 +1,5 @@
 // Monstruos de ejemplo con estadísticas B/X (las mecánicas son genéricas; textos originales).
-import { newMonster } from './model.js';
+import { newMonster, newMBMonster } from './model.js';
 
 export function sampleMonsters() {
   return [
@@ -36,6 +36,25 @@ export function sampleMonsters() {
       ],
       treasureText: 'Saco de cada ogro: 1d6 × 100 mo.',
       notes: 'Ruge antes de cargar: los PJ que lo oigan no quedan sorprendidos.',
+    }),
+    // MÖRK BORG (textos originales)
+    newMBMonster({
+      deck: 'Ejemplos', name: 'Perro de la plaga', kind: 'Bestia enferma',
+      hp: '5', morale: '9', armor: '', attacks: 'Mordisco d6', appearing: 'd4',
+      description: 'Flaco, sin pelo, con llagas que supuran a cada paso. Siguió a los carros de los muertos y ya no recuerda otro olor.',
+      abilities: [{ name: 'Contagio', text: 'Quien sufra un mordisco prueba Resistencia DR12 o pierde d2 de Fuerza hasta que lo cure un sanador.' }],
+      treasureText: 'Un collar de latón con un nombre rayado: «Gris».',
+    }),
+    newMBMonster({
+      deck: 'Ejemplos', name: 'Monje del cilicio', kind: 'Fanático',
+      hp: '9', morale: '11', armor: '-d2', attacks: 'Flagelo de clavos d6, Cuchillo ritual d4', appearing: 'd2',
+      description: 'Camina descalzo sobre las cenizas rezando a un dios que no contesta. Cada herida que recibe la toma como una bendición.',
+      abilities: [
+        { name: 'Éxtasis', text: 'Cuando está a la mitad de su vida, ataca dos veces por ronda.' },
+        { name: 'Mártir', text: 'Al morir, todos los que lo vean prueban Presencia DR10 o pierden un Augurio.' },
+      ],
+      treasureText: '3d10 s en una bolsa de piel humana y una reliquia falsa.',
+      notes: '**Guarida:** una ermita sin techo junto al camino de los ahorcados.',
     }),
   ];
 }

@@ -1,8 +1,8 @@
 import { getCard, putCard, deleteCard } from '../store.js';
 import { getDecks, saveDecks, newDeck, countIn, setCount, purgeMonsters } from '../decks.js';
-import { CARD, ALIGNMENTS, SAVE_KEYS, SAVE_LABELS, derived, uid } from '../model.js';
+import { CARD, ALIGNMENTS, SAVE_KEYS, SAVE_LABELS, SYSTEMS, derived, uid, isMB } from '../model.js';
 import { renderFront, renderBack } from '../render.js';
-import { parseStatBlock } from '../parse.js';
+import { parseStatBlock, parseMBStatBlock } from '../parse.js';
 import { fitWhenReady } from '../fit.js';
 import { fileToDataURL, pickFile } from '../image.js';
 import { h, icon, scaled, toast, debounce, askText, confirmDialog } from '../ui.js';
@@ -74,15 +74,17 @@ export async function editorView(root, id) {
 
   // ---------- pegar bloque ----------
   function pastePanel() {
-    const ta = h('textarea', { class: 'input mono', rows: 6, placeholder:
-      'Trasgo\nAC 6 [13], HD 1-1 (3hp), Att 1 × weapon (1d6), THAC0 19 [0], MV 60\' (20\'), SV D14 W15 P16 B17 S18 (NH), ML 7, AL Chaotic, XP 5, NA 2d4 (6d10), TT R\n▶ Infravisión: 18 m.\n\n— o en castellano —\nClase de armadura: 6\nDados de golpe: 1-1\nMovimiento: 18 metros…' });
+    const mb = isMB(m);
+    const ta = h('textarea', { class: 'input mono', rows: 6, placeholder: mb
+      ? 'Perro de la plaga\nVida 5  Moral 9  Armadura -d2\nMordisco d6\nEspecial: contagia la plaga (DR12).\n\n— o en inglés —\nGOBLIN HP 6, Morale 7, no armor, scimitar d4. Special: …'
+      : 'Trasgo\nAC 6 [13], HD 1-1 (3hp), Att 1 × weapon (1d6), THAC0 19 [0], MV 60\' (20\'), SV D14 W15 P16 B17 S18 (NH), ML 7, AL Chaotic, XP 5, NA 2d4 (6d10), TT R\n▶ Infravisión: 18 m.\n\n— o en castellano —\nClase de armadura: 6\nDados de golpe: 1-1\nMovimiento: 18 metros…' });
     const panel = h('details', { class: 'group paste' },
-      h('summary', {}, h('h3', {}, 'Pegar bloque de estadísticas'), h('span', { class: 'hint' }, 'OSE o Marca del Este')),
+      h('summary', {}, h('h3', {}, 'Pegar bloque de estadísticas'), h('span', { class: 'hint' }, mb ? 'Mörk Borg (castellano o inglés)' : 'OSE o Marca del Este')),
       h('div', { class: 'stack' }, ta,
         h('div', { class: 'toolbar', style: { margin: 0 } },
           h('button', { type: 'button', class: 'btn primary small', onclick: () => {
-            const p = parseStatBlock(ta.value);
-            if (!p) { toast('No he reconocido ningún dato (CA, DG, Moral…)', 3500); return; }
+            const p = mb ? parseMBStatBlock(ta.value) : parseStatBlock(ta.value);
+            if (!p) { toast(mb ? 'No he reconocido ningún dato (Vida, Moral, Armadura…)' : 'No he reconocido ningún dato (CA, DG, Moral…)', 3500); return; }
             const { saves, abilities, ...rest } = p;
             Object.assign(m, rest);
             if (saves) m.saves = { ...m.saves, ...saves };
@@ -146,11 +148,22 @@ export async function editorView(root, id) {
         });
       } }));
 
+    const mb = isMB(m);
+    const systemSeg = h('div', { class: 'seg seg-fill seg-system' }, Object.entries(SYSTEMS).map(([k, label]) =>
+      h('button', { type: 'button', class: (m.system || 'ose') === k ? 'on' : '', 'aria-pressed': (m.system || 'ose') === k ? 'true' : 'false',
+        onclick: () => {
+          if ((m.system || 'ose') === k) return;
+          if (k === 'mb' && !String(m.hp).trim()) m.hp = String(derived(m).hp || '');
+          m.system = k;
+          track(`sistema-${k}`, `Sistema ${label}`);
+          changed(true);
+        } }, label)));
     return group('Identidad', null,
+      field('Sistema de juego', systemSeg),
       h('div', { class: 'grid2' },
         field('Nombre', text('name'), { wide: true }),
-        field('Tipo', text('kind', { placeholder: 'Humanoide, no muerto…' })),
-        field('Alineamiento', alignSeg)),
+        field('Tipo', text('kind', { placeholder: mb ? 'Bestia, no muerto, culto…' : 'Humanoide, no muerto…' }), { wide: mb }),
+        mb ? null : field('Alineamiento', alignSeg)),
       field('Mazos', deckChips()),
       h('div', { class: 'img-row' }, prev,
         h('div', { class: 'stack', style: { flex: 1 } },
@@ -159,12 +172,24 @@ export async function editorView(root, id) {
             m.image ? h('button', { type: 'button', class: 'btn small danger', onclick: () => { m.image = null; changed(true); } }, 'Quitar') : null),
           m.image ? h('div', { class: 'grid3' }, slider('Horizontal', 'imageX', 0, 100, 1), slider('Vertical', 'imageY', 0, 100, 1), slider('Zoom', 'imageZoom', 1, 3, 0.05))
             : h('p', { class: 'hint' }, 'Mejor dibujos a línea en blanco y negro (PNG con fondo transparente o blanco).'),
-          h('label', { class: 'check' },
+          mb ? null : h('label', { class: 'check' },
             h('input', { type: 'checkbox', checked: !!m.frame, onchange: e => { m.frame = e.target.checked; changed(); } }),
             'Marco OSR alrededor de la ilustración'))));
   }
 
+  function mbStats() {
+    return group('Estadísticas', 'Como en el libro: Vida, Moral, Armadura y ataques con su dado de daño.',
+      h('div', { class: 'grid4' },
+        field('Vida', text('hp', { inputmode: 'numeric', placeholder: '6' })),
+        field('Moral', text('morale', { inputmode: 'numeric', placeholder: '7' })),
+        field('Armadura', text('armor', { placeholder: '-d2 (vacío = ninguna)' }), { wide: true }),
+        field('Ataques', text('attacks', { placeholder: 'Garras d6, Mordisco d8' }), { wide: true }),
+        field('Aparecen', text('appearing', { placeholder: 'd4' }), { wide: true })),
+      hpOption());
+  }
+
   function stats() {
+    if (isMB(m)) return mbStats();
     return group('Estadísticas', 'Escribe los DG y deja vacíos PG, TAC0 y PX para calcularlos.',
       h('div', { class: 'grid4' },
         field('CA', text('ac', { inputmode: 'numeric', placeholder: '6' })),
@@ -187,10 +212,10 @@ export async function editorView(root, id) {
     return h('div', { class: `toggle-card${m.hpBoxes ? ' on' : ''}` },
       h('label', { class: 'toggle-main' },
         h('span', { class: 'toggle-text' },
-          h('b', {}, 'Casillas para marcar PG'),
+          h('b', {}, isMB(m) ? 'Casillas para marcar la vida' : 'Casillas para marcar PG'),
           h('small', {}, m.hpBoxes
-            ? 'Van bajo el nombre, en el anverso. Las habilidades y el tesoro pasan al reverso.'
-            : 'Añade casillas en el anverso para tachar los PG durante el combate.')),
+            ? (isMB(m) ? 'Van en el anverso. Lo especial y el botín pasan al reverso.' : 'Van bajo el nombre, en el anverso. Las habilidades y el tesoro pasan al reverso.')
+            : (isMB(m) ? 'Añade casillas en el anverso para tachar la vida durante el combate.' : 'Añade casillas en el anverso para tachar los PG durante el combate.'))),
         h('input', { type: 'checkbox', class: 'switch', role: 'switch', checked: !!m.hpBoxes,
           onchange: e => { m.hpBoxes = e.target.checked; changed(true); } })),
       m.hpBoxes ? h('div', { class: 'toggle-extra' },
@@ -203,6 +228,7 @@ export async function editorView(root, id) {
   }
 
   function saves() {
+    if (isMB(m)) return null;
     return group('Salvaciones', 'Por defecto, como guerrero del nivel de sus DG.',
       h('div', { class: 'grid6' },
         field('Como', autoText('saveAs', () => derived({ ...m, saveAs: '' }).saveAs, { placeholder: 'G1' }), { auto: true }),
@@ -217,9 +243,10 @@ export async function editorView(root, id) {
   }
 
   function combat() {
-    return group(m.hpBoxes ? 'Habilidades y tesoro (reverso)' : 'Combate (anverso)',
-      m.hpBoxes ? 'Están en el reverso porque has activado las casillas de PG (en Estadísticas).'
-        : 'Van en el anverso. Si activas las casillas de PG en Estadísticas, pasan al reverso.',
+    const mb = isMB(m);
+    return group(mb ? (m.hpBoxes ? 'Especial y botín (reverso)' : 'Especial y botín (anverso)') : (m.hpBoxes ? 'Habilidades y tesoro (reverso)' : 'Combate (anverso)'),
+      m.hpBoxes ? `Están en el reverso porque has activado las casillas de ${mb ? 'vida' : 'PG'} (en Estadísticas).`
+        : `Van en el anverso. Si activas las casillas de ${mb ? 'vida' : 'PG'} en Estadísticas, pasan al reverso.`,
       h('div', { class: 'stack' },
         m.abilities.map((a, i) => h('div', { class: 'ability' },
           h('div', { class: 'ability-head' },
@@ -230,14 +257,14 @@ export async function editorView(root, id) {
               onclick: () => { m.abilities.splice(i, 1); changed(true); } }, icon('x'))),
           h('textarea', { class: 'input', rows: 2, value: a.text, placeholder: 'Qué hace…', oninput: e => { a.text = e.target.value; changed(); } }))),
         h('button', { type: 'button', class: 'btn small', style: { alignSelf: 'flex-start' },
-          onclick: () => { m.abilities.push({ name: '', text: '' }); changed(true); } }, '+ Habilidad especial')),
-      field('Tesoro (detalle)', area('treasureText', { rows: 2, placeholder: 'Qué llevan encima o qué guardan en la guarida' })));
+          onclick: () => { m.abilities.push({ name: '', text: '' }); changed(true); } }, mb ? '+ Especial' : '+ Habilidad especial')),
+      field(mb ? 'Botín' : 'Tesoro (detalle)', area('treasureText', { rows: 2, placeholder: mb ? 'Un diente podrido. Vale 2s para un herbolario.' : 'Qué llevan encima o qué guardan en la guarida' })));
   }
 
   function backSide() {
     return group('Descripción y notas (reverso)', 'Admite **negrita** y *cursiva*.',
       field('Descripción', area('description', { rows: 4, placeholder: 'Aspecto, costumbres, dónde se encuentra…' })),
-      field('Notas del DJ', area('notes', { rows: 3, placeholder: 'Tácticas, ganchos, recordatorios…' })));
+      field(isMB(m) ? 'Notas' : 'Notas del DJ', area('notes', { rows: 3, placeholder: 'Tácticas, ganchos, recordatorios…' })));
   }
 
   // ---------- montaje ----------
@@ -245,7 +272,7 @@ export async function editorView(root, id) {
   function renderForm() {
     const y = window.scrollY;
     autoRefs.length = 0;
-    form.replaceChildren(pastePanel(), identity(), stats(), saves(), combat(), backSide());
+    form.replaceChildren(...[pastePanel(), identity(), stats(), saves(), combat(), backSide()].filter(Boolean));
     form.querySelectorAll('textarea').forEach(growArea);
     window.scrollTo(0, y);
   }

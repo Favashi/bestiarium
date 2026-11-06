@@ -108,3 +108,91 @@ export function parseStatBlock(text) {
   if (abilities.length) out.abilities = abilities;
   return out;
 }
+
+// =================== MÖRK BORG ===================
+// Acepta el formato del libro ("GOBLIN HP 6, Morale 7, no armor, scimitar d4. Special: …"),
+// el de las webs generadoras (una etiqueta por línea) y sus equivalentes en castellano.
+
+const MB_SECTIONS = [
+  { key: 'special', re: /^(?:special|especial|abilit(?:y|ies)|habilidad(?:es)?)\b\s*:?\s*/i },
+  { key: 'loot', re: /^(?:loot|treasure|botín|botin|tesoro)\b\s*:?\s*/i },
+  { key: 'lair', re: /^(?:lair|guarida)\b\s*:?\s*/i },
+];
+const MB_NONE = /^(?:none|ninguna?|nada|-|—)\.?$/i;
+const DIE = '(?:\\d+)?d\\d+(?:\\s*[+\\-−]\\s*\\d+)?';
+
+export function parseMBStatBlock(text) {
+  const src = String(text).replace(/\r/g, '').trim();
+  if (!src) return null;
+  const out = {};
+
+  const hp = src.match(/\b(?:HP|PV|PG|Vida)\s*:?\s*(\d+)/i);
+  const morale = src.match(/\b(?:Morale|Moral)\s*:?\s*(\d+|[-—])/i);
+  const armor = src.match(new RegExp(`\\b(?:Armou?r|Armadura)\\s*:?\\s*(-?\\s*${DIE}|tier\\s*\\d|\\d+)`, 'i'));
+  const noArmor = /\b(?:no armou?r|sin armadura|armou?r\s*:?\s*none|armadura\s*:?\s*ninguna)\b/i.test(src);
+  if (!hp && !morale && !armor && !noArmor) return null;
+  if (hp) out.hp = hp[1];
+  if (morale) out.morale = morale[1] === '—' ? '-' : morale[1];
+  if (armor) out.armor = armor[1].replace(/\s+/g, '');
+  else if (noArmor) out.armor = '';
+
+  // Secciones (Especial, Botín, Guarida) y líneas de estadísticas
+  const lines = src.split('\n').map(l => l.trim()).filter(Boolean);
+  const isStat = l => /\b(?:HP|PV|PG|Vida|Morale|Moral|Armou?r|Armadura)\b/i.test(l) || new RegExp(`^[^.]{1,30}\\s${DIE}\\.?$`, 'i').test(l);
+  const sections = { special: [], loot: [], lair: [] };
+  const prose = [];
+  let current = null;
+  let statsSeen = false;
+  let statText = '';
+  for (const l of lines) {
+    const sec = MB_SECTIONS.find(s => s.re.test(l));
+    if (sec) {
+      current = sec.key;
+      const rest = l.replace(sec.re, '').trim();
+      if (rest) sections[current].push(rest);
+      continue;
+    }
+    if (isStat(l)) {
+      statsSeen = true; current = null;
+      // En el formato del libro, "Special:" puede ir en la misma línea
+      const [stat, special] = l.split(/\b(?:Special|Especial)\s*:\s*/i);
+      statText += `\n${stat}`;
+      if (special) { sections.special.push(special); current = 'special'; }
+      continue;
+    }
+    if (current) sections[current].push(l);
+    else prose.push({ l, statsSeen });
+  }
+
+  // Nombre: texto antes de "HP" en la misma línea, o primera línea en solitario
+  const first = lines[0];
+  const inline = first.match(/^(.+?)\s+(?:HP|PV|PG|Vida)\b/i);
+  if (inline) out.name = inline[1].replace(/[,:.]$/, '');
+  else if (prose.length && !prose[0].statsSeen && prose[0].l === first && first.length <= 40) { out.name = first.replace(/[,:.]$/, ''); prose.shift(); }
+  if (out.name && out.name === out.name.toUpperCase()) out.name = out.name.charAt(0) + out.name.slice(1).toLowerCase();
+
+  // Ataques: "arma dX" que no sean la armadura
+  const attacks = [];
+  for (const seg of statText.split(/[,;.\n]/)) {
+    const s = seg.trim().replace(/^.*?\b(?:HP|PV|PG|Vida)\s*:?\s*\d+\s*/i, '');
+    if (!s || /\b(?:Armou?r|Armadura|Morale|Moral)\b/i.test(s)) continue;
+    const mt = s.match(new RegExp(`^(.+?)\\s+(${DIE})\\b`, 'i'));
+    if (mt) attacks.push(`${mt[1].charAt(0).toUpperCase()}${mt[1].slice(1)} ${mt[2].replace(/\s+/g, '')}`);
+  }
+  if (attacks.length) out.attacks = attacks.join(', ');
+
+  const special = sections.special.join(' ').trim();
+  if (special && !MB_NONE.test(special)) {
+    const bullets = sections.special.filter(l => /^[▶►•\-*–]/.test(l));
+    out.abilities = (bullets.length ? bullets.map(l => l.replace(/^[▶►•\-*–]\s*/, '')) : [special]).map(t => {
+      const named = t.match(/^([^:.]{2,40})[:.]\s+(.+)$/);
+      return named ? { name: named[1], text: named[2] } : { name: '', text: t };
+    });
+  }
+  const loot = sections.loot.join(' ').trim();
+  if (loot && !MB_NONE.test(loot)) out.treasureText = loot;
+  const lair = sections.lair.join(' ').trim();
+  if (lair && !MB_NONE.test(lair)) out.notes = `**Guarida:** ${lair}`;
+  if (prose.length) out.description = prose.map(p => p.l).join(' ');
+  return out;
+}

@@ -168,3 +168,78 @@
 
 /* ---------- Reverso ---------- */
 .card-back .back-head h2 { font-size: 8cqw; }
+
+/* =================== MÖRK BORG =================== */
+/* Amarillo y negro, nombre en gótica, datos a máquina y filetes trazados a mano. */
+.card.mb {
+  --mb-yellow: #ffe82c;
+  --mb-rule: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 6' preserveAspectRatio='none'%3E%3Cpath d='M0 3.3 L19 2.7 L38 3.6 L57 2.9 L74 3.5 L96 2.3 L118 3.4 L139 2.8 L158 3.7 L179 2.6 L200 3.2' fill='none' stroke='%23000' stroke-width='1.2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  background: var(--mb-yellow);
+  color: #000;
+  font-family: "Space Mono", ui-monospace, monospace;
+  border-radius: 2.5mm;
+}
+.ink-save .card.mb { background: #fff; }
+
+.card.mb .mb-head { flex: none; position: relative; padding: .6mm 0 2.4mm; margin-bottom: 2mm;
+  background: var(--mb-rule) bottom / 100% 1.4mm no-repeat; }
+.card.mb .mb-kicker { font-size: 3.3cqw; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; line-height: 1.2; margin-bottom: .6mm; }
+.card.mb .mb-name {
+  font-family: "UnifrakturCook", "Pirata One", serif; font-weight: 700;
+  font-size: 12.5cqw; line-height: .95; letter-spacing: 0; overflow-wrap: anywhere;
+  transform: rotate(-1.5deg); transform-origin: 0 100%;
+}
+.card-back.mb .mb-name { font-size: 10cqw; }
+
+.card.mb .mb-top { flex: none; height: 37cqh; display: grid; grid-template-columns: 52% 1fr; column-gap: 3mm; margin-bottom: 2.4mm; }
+.card.mb .mb-portrait { position: relative; min-height: 0; overflow: hidden; }
+.card.mb .mb-portrait img {
+  position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain;
+  filter: grayscale(1) contrast(1.6); mix-blend-mode: multiply; user-select: none;
+}
+.card.mb .ph { position: absolute; inset: 0; display: grid; place-items: center;
+  background: repeating-linear-gradient(-45deg, transparent 0 1.4mm, rgba(0,0,0,.12) 1.4mm 1.7mm); }
+.card.mb .ph span { font-family: "UnifrakturCook", serif; font-weight: 700; font-size: 34cqw; line-height: 1; opacity: .85; }
+
+.card.mb .mb-stats { align-self: center; display: flex; flex-direction: column; gap: 1.6mm; }
+.card.mb .mb-stats > div { display: flex; flex-direction: column; padding-bottom: 1.2mm;
+  background: var(--mb-rule) bottom / 100% 1mm no-repeat; }
+.card.mb .mb-stats dt { font-size: 3cqw; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; line-height: 1.1; }
+.card.mb .mb-stats dd { font-size: 6.4cqw; font-weight: 700; line-height: 1.05; overflow-wrap: anywhere; }
+
+/* Etiqueta de sección: losa negra con letra amarilla, ligeramente torcida */
+.card.mb .mb-tag {
+  display: inline-block; margin: 0 0 .5em; padding: .12em .45em .1em;
+  background: #000; color: var(--mb-yellow);
+  font-family: "Space Mono", monospace; font-weight: 700; font-size: .95em; text-transform: uppercase; letter-spacing: .1em; line-height: 1.25;
+  transform: rotate(-1.2deg);
+}
+.ink-save .card.mb .mb-tag { color: #fff; }
+
+.card.mb .mb-body { font-variant-numeric: lining-nums; font-family: "Alegreya", Georgia, serif; font-size: calc(var(--fs) * 1.08); line-height: 1.22; text-align: left; hyphens: auto; }
+.card.mb .mb-body section { margin-top: .9em; }
+.card.mb .mb-body > :first-child { margin-top: 0; }
+.card.mb .entry b { font-family: "Space Mono", monospace; font-size: .86em; text-transform: uppercase; letter-spacing: .04em; }
+
+.card.mb .mb-attacks .mb-atk { display: flex; align-items: baseline; gap: 1.2mm; padding: .2em 0 .35em;
+  background: var(--mb-rule) bottom / 100% .8mm no-repeat; font-family: "Space Mono", monospace; font-size: .92em; text-transform: uppercase; }
+.card.mb .mb-atk span { flex: 1; min-width: 0; }
+.card.mb .mb-atk b { flex: none; font-size: 1.35em; line-height: 1; text-transform: none; }
+
+.card.mb .mb-desc p { font-size: 1.12em; line-height: 1.25; }
+.card.mb .mb-desc p::first-letter { font-family: "UnifrakturCook", serif; font-weight: 700; font-size: 2.6em; float: left; line-height: .8; margin: .08em .1em 0 0; }
+
+.card.mb .hp-track { margin-bottom: 2.6mm; }
+.card.mb .hp-track .sec { font-family: "Space Mono", monospace; font-size: 3.1cqw; letter-spacing: .12em; border: 0; padding-bottom: 0;
+  background: none; display: inline-block; color: var(--mb-yellow); background-color: #000; padding: .3mm 1.2mm; transform: rotate(-1deg); }
+.ink-save .card.mb .hp-track .sec { color: #fff; }
+.card.mb .hp-track .sec small { font-family: "Space Mono", monospace; }
+.card.mb .hp-n { font-family: "Space Mono", monospace; }
+.card.mb .hp-boxes i { border-color: #000; border-radius: 0; background: rgba(255,255,255,.35); }
+
+/* Reverso: inicial gótica gigante de fondo */
+.card-back.mb .mb-ghost {
+  position: absolute; right: -6mm; bottom: -14mm; z-index: 0; pointer-events: none;
+  font-family: "UnifrakturCook", serif; font-weight: 700; font-size: 75cqw; line-height: 1; color: rgba(0,0,0,.08);
+}
+.card-back.mb > :not(.mb-ghost) { position: relative; z-index: 1; }

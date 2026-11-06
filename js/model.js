@@ -14,6 +14,10 @@ export const SAVE_LABELS = {
 
 export const ALIGNMENTS = ['Legal', 'Neutral', 'Caótico'];
 
+/** Sistemas de juego. 'ose' = Old-School Essentials / La Marca del Este; 'mb' = MÖRK BORG. */
+export const SYSTEMS = { ose: 'OSE / Marca', mb: 'Mörk Borg' };
+export const isMB = m => m?.system === 'mb';
+
 export function uid() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 }
@@ -25,6 +29,7 @@ export function newMonster(overrides = {}) {
     createdAt: now,
     updatedAt: now,
     deck: 'General',
+    system: 'ose',      // 'ose' | 'mb'
     name: 'Nuevo monstruo',
     alignment: 'Caótico',
     kind: '',
@@ -37,6 +42,7 @@ export function newMonster(overrides = {}) {
     hpRows: 1,          // una fila de casillas por cada monstruo
     // Bloque de estadísticas (vacío = calculado automáticamente cuando se puede)
     ac: '',
+    armor: '',          // MÖRK BORG: armadura (p. ej. "-d2")
     hd: '1',
     hp: '',
     thac0: '',
@@ -156,8 +162,14 @@ export function ascendingAC(ac) {
 
 export function signed(n) { return n >= 0 ? `+${n}` : `−${Math.abs(n)}`; }
 
+/** Monstruo nuevo de MÖRK BORG (sin DG, alineamiento ni salvaciones). */
+export function newMBMonster(overrides = {}) {
+  return newMonster({ system: 'mb', alignment: '', hd: '', hp: '6', morale: '7', armor: '', ...overrides });
+}
+
 /** Valores efectivos para mostrar (lo escrito o lo calculado). */
 export function derived(m) {
+  if (isMB(m)) return { ac: '', hp: String(m.hp ?? '').trim(), thac0: '', xp: '', saveAs: '', saves: {} };
   const thac0 = String(m.thac0).trim() !== '' ? parseInt(m.thac0, 10) : calcTHAC0(m.hd);
   const saveAs = String(m.saveAs).trim() || calcSaveAs(m.hd) || '';
   const table = savesFor(saveAs) || [];

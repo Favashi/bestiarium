@@ -1,5 +1,9 @@
 import { getAllCards, putCard, putCards, deleteCard } from '../store.js';
-import { CARD, newMonster, uid } from '../model.js';
+import { CARD, newMonster, newMBMonster, uid } from '../model.js';
+import { defaultSystem } from '../theme.js';
+
+/** Dato breve bajo cada carta: DG en OSE, vida en Mörk Borg. */
+const statLabel = m => (m.system === 'mb' ? (m.hp ? `Vida ${m.hp}` : '') : (m.hd ? `DG ${m.hd}` : ''));
 import { renderFront } from '../render.js';
 import { fitWhenReady } from '../fit.js';
 import { exportJSON } from '../io.js';
@@ -23,7 +27,7 @@ export async function libraryView(root) {
     oninput: () => { state.search = search.value; renderGrid(); } });
   const selBtn = h('button', { class: 'btn', onclick: () => { selecting = !selecting; if (!selecting) state.selection.clear(); render(); } });
   const newBtn = h('button', { class: 'btn primary', onclick: async () => {
-    const m = newMonster();
+    const m = defaultSystem() === 'mb' ? newMBMonster() : newMonster();
     await putCard(m);
     track('nuevo-monstruo', 'Nuevo monstruo');
     const deck = currentDeck();
@@ -164,7 +168,7 @@ export async function libraryView(root) {
               h('span', { class: 'check' }, h('input', { type: 'checkbox', checked: picked.has(c.id),
                 onchange: e => { if (e.target.checked) picked.add(c.id); else picked.delete(c.id); } })),
               h('span', { class: 'pick-name' }, c.name),
-              h('span', { class: 'muted' }, [c.kind, c.hd && `DG ${c.hd}`].filter(Boolean).join(' · ')),
+              h('span', { class: 'muted' }, [c.kind, statLabel(c)].filter(Boolean).join(' · ')),
               inDeck ? h('span', { class: 'badge' }, `×${inDeck} en el mazo`) : null);
           }));
           if (!list.children.length) list.append(h('p', { class: 'muted' }, 'No hay monstruos con ese nombre.'));
@@ -235,7 +239,7 @@ export async function libraryView(root) {
       h('button', { type: 'button', class: 'tile-del', title: deck ? 'Quitar o borrar' : 'Borrar', 'aria-label': `${deck ? 'Quitar o borrar' : 'Borrar'} ${m.name}`,
         html: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>', onclick: e => { e.stopPropagation(); deleteOne(m); } }),
       thumb,
-      h('div', { class: 'tile-meta' }, h('span', { class: 'name', title: m.name }, m.name), h('span', { class: 'muted' }, m.hd ? `DG ${m.hd}` : '')),
+      h('div', { class: 'tile-meta' }, h('span', { class: 'name', title: m.name }, m.name), h('span', { class: 'muted' }, statLabel(m))),
       deck
         ? h('div', { class: 'tile-count' },
           h('span', { class: 'muted' }, 'Copias'),

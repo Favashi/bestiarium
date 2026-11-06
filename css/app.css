@@ -544,3 +544,133 @@ h2.view-title::after, .deck-head h2::after {
 .deck-tab.on .deck-tab-x:hover { background: rgba(255,255,255,.15); }
 .deck-tab.add { padding: 7px 14px 6px; }
 .dlg-list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+
+/* =================== Tema MÖRK BORG =================== */
+/* Amarillo y negro, gótica para los títulos, máquina de escribir para todo lo demás,
+   losas negras torcidas como etiquetas y filetes trazados a mano. */
+:root[data-theme="mb"] {
+  --paper: #ffe82c;
+  --paper-2: #f3d600;
+  --sheet: #fff8c2;
+  --ink: #000;
+  --ink-soft: #000;
+  --muted: #3d3700;
+  --rule: #000;
+  --line: #000;
+  --red: #000;
+  --red-ink: #ffe82c;
+  --blue: #000;
+  --danger: #000;
+  --leather: #000;
+  --leather-2: #000;
+  --gold: #ffe82c;
+  --parch-light: #ffe82c;
+  --shadow-print: 4px 4px 0 #000;
+  --font-head: "Space Mono", ui-monospace, monospace;
+  --font-gothic: "UnifrakturCook", "Pirata One", serif;
+  --font-body: "Space Mono", ui-monospace, monospace;
+  --mb-rule: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 6' preserveAspectRatio='none'%3E%3Cpath d='M0 3.3 L19 2.7 L38 3.6 L57 2.9 L74 3.5 L96 2.3 L118 3.4 L139 2.8 L158 3.7 L179 2.6 L200 3.2' fill='none' stroke='%23000' stroke-width='1.6' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  --mb-rule-y: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 6' preserveAspectRatio='none'%3E%3Cpath d='M0 3.3 L19 2.7 L38 3.6 L57 2.9 L74 3.5 L96 2.3 L118 3.4 L139 2.8 L158 3.7 L179 2.6 L200 3.2' fill='none' stroke='%23ffe82c' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+}
+[data-theme="mb"] body { font-size: 14.5px; }
+[data-theme="mb"] ::selection { background: #000; color: #ffe82c; }
+[data-theme="mb"] :focus-visible { outline: 3px solid #000; outline-offset: 2px; }
+
+/* Cabecera negra con letras amarillas y filete a mano */
+[data-theme="mb"] .topbar { border-bottom: 0; box-shadow: none; padding-bottom: 14px;
+  background: #000 var(--mb-rule-y) bottom 4px left 0 / 100% 7px no-repeat; }
+[data-theme="mb"] .brand-name { font-size: 36px; text-shadow: none; transform: rotate(-2deg); }
+[data-theme="mb"] .brand-tag { font-style: normal; letter-spacing: .02em; font-size: 11px; }
+[data-theme="mb"] .brand img { box-shadow: 0 0 0 1.5px #ffe82c; border-radius: 0; }
+[data-theme="mb"] .topnav a { color: #ffe82c; }
+[data-theme="mb"] .topnav .nav-main { border-color: #ffe82c; box-shadow: none; letter-spacing: .04em; font-size: 15px; border-radius: 0; }
+[data-theme="mb"] .topnav .nav-main:hover { background: #222; color: #ffe82c; }
+[data-theme="mb"] .topnav .nav-main.active { background: #ffe82c; color: #000; box-shadow: none; transform: rotate(-1.5deg); }
+[data-theme="mb"] .topnav .nav-settings { border-left-color: #ffe82c; color: #ffe82c; }
+@media (max-width: 560px) {
+  [data-theme="mb"] .topnav .nav-main { font-size: 13px; letter-spacing: 0; padding: 7px 8px; }
+  [data-theme="mb"] .brand-name { font-size: 28px; }
+}
+
+/* Títulos en gótica; filetes trazados a mano en lugar del doble filete */
+[data-theme="mb"] h2.view-title { font-size: 46px; border-bottom: 0; box-shadow: none; padding-bottom: 12px;
+  background: var(--mb-rule) bottom / 100% 8px no-repeat; }
+[data-theme="mb"] h2.view-title::after, [data-theme="mb"] .deck-head h2::after { display: none; }
+[data-theme="mb"] .deck-head h2 { font-size: 38px; transform: rotate(-1.5deg); }
+
+/* Recuadros: un solo borde grueso con sombra dura, sin rombos */
+[data-theme="mb"] .group, [data-theme="mb"] .panel, [data-theme="mb"] .deck-head {
+  outline: 0; border: 2.5px solid #000; box-shadow: 6px 6px 0 #000; margin: 0 6px 6px 0; }
+[data-theme="mb"] .group::before, [data-theme="mb"] .group::after,
+[data-theme="mb"] .panel::before, [data-theme="mb"] .panel::after { display: none; }
+[data-theme="mb"] .group.paste { box-shadow: none; }
+[data-theme="mb"] .group > header { border-bottom: 0; box-shadow: none; padding-bottom: 12px;
+  background: var(--mb-rule) bottom / 100% 6px no-repeat; }
+/* Etiqueta de sección: losa negra con letra amarilla, torcida */
+[data-theme="mb"] .group > header h3, [data-theme="mb"] .group > summary h3 {
+  display: inline-flex; background: #000; color: #ffe82c; padding: 3px 12px 2px;
+  font-size: 16px; letter-spacing: .08em; transform: rotate(-1.2deg); }
+[data-theme="mb"] .group > header h3::before { display: none; }
+[data-theme="mb"] .group.paste > summary h3::before { color: #ffe82c; }
+[data-theme="mb"] .group > header .hint { margin-top: 8px; }
+[data-theme="mb"] .tile-meta .muted { white-space: nowrap; }
+[data-theme="mb"] .hint, [data-theme="mb"] .tile-meta .muted, [data-theme="mb"] .page-label { font-style: normal; }
+[data-theme="mb"] .deck-group > h3 { border-bottom: 0; box-shadow: none; background: var(--mb-rule) bottom / 100% 6px no-repeat; padding-bottom: 8px; }
+
+/* Botones y campos */
+[data-theme="mb"] .btn { border-radius: 0; border-width: 2.5px; letter-spacing: .03em; font-weight: 700; font-size: 14px; background: #fff; }
+[data-theme="mb"] .btn:hover { background: #000; color: #ffe82c; }
+[data-theme="mb"] .btn.primary { background: #000; color: #ffe82c; }
+[data-theme="mb"] .btn.primary:hover { background: #fff; color: #000; }
+[data-theme="mb"] .btn.small { font-size: 12.5px; }
+[data-theme="mb"] .btn:active { box-shadow: 1px 1px 0 #000; }
+[data-theme="mb"] .btn.danger { box-shadow: var(--shadow-print), inset 0 0 0 2px #fff, inset 0 0 0 4px #000; }
+[data-theme="mb"] .btn.danger:hover { box-shadow: var(--shadow-print), inset 0 0 0 2px #000, inset 0 0 0 4px #ffe82c; }
+[data-theme="mb"] .btn.icon.danger, [data-theme="mb"] .btn.small.danger { box-shadow: 2px 2px 0 #000; }
+[data-theme="mb"] .btn:disabled { background: transparent; color: #000; }
+[data-theme="mb"] .input { background-color: #fff; border-width: 2px; border-radius: 0; box-shadow: none; }
+[data-theme="mb"] .input:focus { box-shadow: 4px 4px 0 #000; }
+[data-theme="mb"] .input::placeholder { color: #7a7130; font-style: normal; }
+[data-theme="mb"] .field > span { letter-spacing: .06em; font-weight: 700; font-size: 12px; }
+[data-theme="mb"] .seg { border-radius: 0; box-shadow: 3px 3px 0 #000; background: #fff; }
+[data-theme="mb"] .seg button { letter-spacing: .03em; font-weight: 700; color: #000; }
+[data-theme="mb"] .seg button.on { background: #000; color: #ffe82c; }
+[data-theme="mb"] .auto-tag { font-family: var(--font-body); font-style: normal; color: #000; }
+[data-theme="mb"] .chip { border-radius: 0; color: #000; border-color: #000; background: #fff; font-family: var(--font-body); }
+[data-theme="mb"] .chips .chip.toggle.on { background: #000; color: #ffe82c; }
+[data-theme="mb"] .toggle-card { background: #fff8c2; }
+[data-theme="mb"] .toggle-card.on { background: #fff; box-shadow: 4px 4px 0 #000; }
+[data-theme="mb"] .switch { border-radius: 0; }
+[data-theme="mb"] .switch:checked { background: #000; }
+[data-theme="mb"] .switch:checked::after { background: #ffe82c; }
+[data-theme="mb"] .ability { background: #fff8c2; border-left-width: 5px; }
+[data-theme="mb"] .print-list, [data-theme="mb"] .pick-list { background: #fff8c2; }
+
+/* Pestañas de mazos */
+[data-theme="mb"] .deck-tabs { border-bottom-width: 3px; box-shadow: none; }
+[data-theme="mb"] .deck-tab { border-radius: 0; }
+[data-theme="mb"] .deck-tab:not(.on) { background: #fff8c2; color: #000; }
+[data-theme="mb"] .deck-tab:not(.on) small { color: #000; }
+[data-theme="mb"] .deck-tab.on { box-shadow: none; transform: rotate(-1deg); transform-origin: bottom center; }
+[data-theme="mb"] .deck-tab.add { background: transparent; }
+[data-theme="mb"] .empty { outline: 0; background: #fff8c2; border-width: 3px; }
+[data-theme="mb"] .empty h3 { font-size: 40px; }
+
+/* Diálogos */
+[data-theme="mb"] .dlg { border-radius: 0; outline: 0; border-width: 3px; box-shadow: 10px 10px 0 #000; background: #ffe82c; }
+[data-theme="mb"] .dlg-head { border-bottom: 0; }
+[data-theme="mb"] .dlg-head h2 { font-size: 32px; }
+[data-theme="mb"] .dlg-foot { border-top: 2px solid #000; }
+[data-theme="mb"] .tut-icon { outline-width: 2px; }
+[data-theme="mb"] .tut-stage h3 { font-size: 36px; }
+
+/* Pie y enlaces */
+[data-theme="mb"] .site-foot { border-top: 0; box-shadow: none; background: #000 var(--mb-rule-y) top 6px left 0 / 100% 7px no-repeat; color: #ffe82c; padding-top: 26px; }
+[data-theme="mb"] .site-foot a { color: #ffe82c; border-bottom-color: #ffe82c; }
+[data-theme="mb"] .app-link { box-shadow: 5px 5px 0 #000; background: #fff8c2; }
+[data-theme="mb"] .app-name { font-size: 30px; }
+[data-theme="mb"] .tile .tile-del, [data-theme="mb"] .tile .pick { border-radius: 0; background: #fff; }
+@media (max-width: 520px) {
+  [data-theme="mb"] .group.paste > summary .hint { display: none; }
+  [data-theme="mb"] .group > header h3, [data-theme="mb"] .group > summary h3 { font-size: 14px; }
+}

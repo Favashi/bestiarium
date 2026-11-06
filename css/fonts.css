@@ -7,3 +7,10 @@
 @font-face { font-family: "Jost"; font-weight: 600; font-style: normal; font-display: swap; src: url(../fonts/jost-latin-600-normal.woff2) format("woff2"); }
 @font-face { font-family: "Jost"; font-weight: 700; font-style: normal; font-display: swap; src: url(../fonts/jost-latin-700-normal.woff2) format("woff2"); }
 @font-face { font-family: "Pirata One"; font-weight: 400; font-style: normal; font-display: swap; src: url(../fonts/pirata-one-latin-400-normal.woff2) format("woff2"); }
+
+/* Tema MÖRK BORG */
+@font-face { font-family: "UnifrakturCook"; font-weight: 700; font-style: normal; font-display: swap; src: url(../fonts/UnifrakturCook-Bold.woff2) format("woff2"); }
+@font-face { font-family: "Space Mono"; font-weight: 400; font-style: normal; font-display: swap; src: url(../fonts/SpaceMono-Regular.woff2) format("woff2"); }
+@font-face { font-family: "Space Mono"; font-weight: 700; font-style: normal; font-display: swap; src: url(../fonts/SpaceMono-Bold.woff2) format("woff2"); }
+@font-face { font-family: "Alegreya"; font-weight: 400 900; font-style: normal; font-display: swap; src: url(../fonts/Alegreya-Variable.woff2) format("woff2"); }
+@font-face { font-family: "Alegreya"; font-weight: 400 900; font-style: italic; font-display: swap; src: url(../fonts/Alegreya-Italic-Variable.woff2) format("woff2"); }

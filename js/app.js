@@ -9,6 +9,9 @@ import { creditsView } from './views/credits.js';
 import { CREDITS } from './credits.js';
 import { maybeShowTutorial } from './tutorial.js';
 import { pageview } from './analytics.js';
+import { applyTheme } from './theme.js';
+
+applyTheme();
 
 const view = document.getElementById('view');
 let cleanup = null;
