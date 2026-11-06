@@ -4,7 +4,7 @@ import { renderFront } from '../render.js';
 import { fitWhenReady } from '../fit.js';
 import { exportJSON } from '../io.js';
 import { getDecks, saveDecks, newDeck, countIn, setCount, totalCards, purgeMonsters } from '../decks.js';
-import { h, scaled, watchScale, toast, download, dialog, askText, confirmDialog, slug } from '../ui.js';
+import { h, icon, scaled, watchScale, toast, download, dialog, askText, confirmDialog, slug } from '../ui.js';
 import { state } from '../state.js';
 import { track } from '../analytics.js';
 
@@ -43,7 +43,7 @@ export async function libraryView(root) {
         onclick: () => { state.deckFilter = id; state.selection.clear(); selecting = false; render(); } },
         h('span', {}, label), h('small', {}, String(count))),
       deck ? h('button', { type: 'button', class: 'deck-tab-x', title: `Eliminar el mazo ${deck.name}`, 'aria-label': `Eliminar el mazo ${deck.name}`,
-        onclick: () => deleteDeck(deck) }, '✕') : null);
+        onclick: () => deleteDeck(deck) }, icon('x')) : null);
     tabs.replaceChildren(
       tab('', 'Todos', cards.length),
       ...decks.map(d => tab(d.id, d.name, totalCards(d), d)),
@@ -246,9 +246,9 @@ export async function libraryView(root) {
                 if (!(await confirmDialog('Quitar del mazo', `¿Quitar «${m.name}» de «${deck.name}»?`, 'Quitar'))) return;
               }
               setCount(deck, m.id, n); await persistDecks();
-            } }, '−'),
+            } }, icon('minus')),
             h('output', {}, String(countIn(deck, m.id))),
-            h('button', { type: 'button', class: 'btn icon small', 'aria-label': 'Una copia más', onclick: async () => { setCount(deck, m.id, countIn(deck, m.id) + 1); await persistDecks(); } }, '+')))
+            h('button', { type: 'button', class: 'btn icon small', 'aria-label': 'Una copia más', onclick: async () => { setCount(deck, m.id, countIn(deck, m.id) + 1); await persistDecks(); } }, icon('plus'))))
         : inDecks.length ? h('div', { class: 'tile-decks' }, inDecks.map(d => h('span', { class: 'chip' }, d.name))) : null);
     thumb.addEventListener('click', () => { if (selecting) togglePick(m.id); else location.hash = `#/edit/${m.id}`; });
     return el;

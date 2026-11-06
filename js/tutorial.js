@@ -1,6 +1,6 @@
 // Tutorial de bienvenida: pasos en un diálogo. Se muestra la primera vez hasta que se marca «No volver a mostrar».
 import { getMeta, setMeta } from './store.js';
-import { h } from './ui.js';
+import { h, icon } from './ui.js';
 
 const ICON = {
   skull: '<path d="M32 8c13 0 21 9 21 20 0 7-3 11-6 13v6a3 3 0 0 1-3 3H20a3 3 0 0 1-3-3v-6c-3-2-6-6-6-13C11 17 19 8 32 8z"/><circle cx="24.5" cy="30" r="5.5"/><circle cx="39.5" cy="30" r="5.5"/><path d="M32 38l-3 5h6zM24 50v-5M29 50v-5M35 50v-5M40 50v-5"/>',
@@ -44,7 +44,7 @@ export function openTutorial({ firstRun = false } = {}) {
     const dlg = h('dialog', { class: 'dlg tut', 'aria-label': 'Tutorial' });
     const stage = h('div', { class: 'tut-stage' });
     const dots = h('div', { class: 'tut-dots' });
-    const prev = h('button', { type: 'button', class: 'btn', onclick: () => go(i - 1) }, '← Anterior');
+    const prev = h('button', { type: 'button', class: 'btn', onclick: () => go(i - 1) }, icon('left'), 'Anterior');
     const next = h('button', { type: 'button', class: 'btn primary', onclick: () => (i < STEPS.length - 1 ? go(i + 1) : close()) });
     const never = h('input', { type: 'checkbox', checked: !firstRun });
     const neverLabel = h('label', { class: 'check tut-never' }, never, 'No volver a mostrar al abrir');
@@ -63,12 +63,12 @@ export function openTutorial({ firstRun = false } = {}) {
         ${s.text.map(t => `<p>${rich(t)}</p>`).join('')}`;
       dots.replaceChildren(...STEPS.map((_, k) => h('button', { type: 'button', class: `tut-dot${k === i ? ' on' : ''}`, 'aria-label': `Paso ${k + 1}`, onclick: () => go(k) })));
       prev.disabled = i === 0;
-      next.textContent = i === STEPS.length - 1 ? '¡A jugar!' : 'Siguiente →';
+      next.replaceChildren(...(i === STEPS.length - 1 ? ['¡A jugar!'] : ['Siguiente', icon('right')]));
     }
 
     dlg.append(
       h('header', { class: 'dlg-head' }, h('h2', {}, 'Cómo funciona'),
-        h('button', { type: 'button', class: 'dlg-x', 'aria-label': 'Cerrar', onclick: close }, '✕')),
+        h('button', { type: 'button', class: 'dlg-x', 'aria-label': 'Cerrar', onclick: close }, icon('x'))),
       h('div', { class: 'dlg-body' }, stage, dots),
       h('footer', { class: 'dlg-foot tut-foot' }, neverLabel, h('div', { class: 'tut-nav' }, prev, next)));
     dlg.addEventListener('cancel', e => { e.preventDefault(); close(); });

@@ -2,7 +2,7 @@ import { getAllCards, getMeta, setMeta } from '../store.js';
 import { CARD } from '../model.js';
 import { renderFace } from '../render.js';
 import { fitWhenReady } from '../fit.js';
-import { h, scaled, watchScale } from '../ui.js';
+import { h, icon, scaled, watchScale } from '../ui.js';
 import { state } from '../state.js';
 import { getDecks, countIn } from '../decks.js';
 import { track } from '../analytics.js';
@@ -123,9 +123,9 @@ export async function printView(root) {
         h('label', { class: 'check' }, h('input', { type: 'checkbox', checked: n > 0, onchange: e => set(e.target.checked ? 1 : 0) }),
           h('span', { class: 'pr-name' }, c.name)),
         h('div', { class: 'stepper' },
-          h('button', { type: 'button', class: 'btn icon small', 'aria-label': 'Menos', disabled: n <= 0, onclick: () => set(n - 1) }, '−'),
+          h('button', { type: 'button', class: 'btn icon small', 'aria-label': 'Menos', disabled: n <= 0, onclick: () => set(n - 1) }, icon('minus')),
           out,
-          h('button', { type: 'button', class: 'btn icon small', 'aria-label': 'Más', onclick: () => set(n + 1) }, '+')));
+          h('button', { type: 'button', class: 'btn icon small', 'aria-label': 'Más', onclick: () => set(n + 1) }, icon('plus'))));
     });
     cardList.replaceChildren(...(rows.length ? rows : [h('p', { class: 'muted' }, 'No hay monstruos en esta selección.')]));
   }

@@ -5,7 +5,7 @@ import { renderFront, renderBack } from '../render.js';
 import { parseStatBlock } from '../parse.js';
 import { fitWhenReady } from '../fit.js';
 import { fileToDataURL, pickFile } from '../image.js';
-import { h, scaled, toast, debounce, askText, confirmDialog } from '../ui.js';
+import { h, icon, scaled, toast, debounce, askText, confirmDialog } from '../ui.js';
 import { track } from '../analytics.js';
 
 export async function editorView(root, id) {
@@ -196,9 +196,9 @@ export async function editorView(root, id) {
       m.hpBoxes ? h('div', { class: 'toggle-extra' },
         h('span', {}, 'Criaturas'),
         h('div', { class: 'stepper' },
-          h('button', { type: 'button', class: 'btn icon small', 'aria-label': 'Menos', disabled: count <= 1, onclick: () => setCount(count - 1) }, '−'),
+          h('button', { type: 'button', class: 'btn icon small', 'aria-label': 'Menos', disabled: count <= 1, onclick: () => setCount(count - 1) }, icon('minus')),
           h('output', {}, String(count)),
-          h('button', { type: 'button', class: 'btn icon small', 'aria-label': 'Más', disabled: count >= 12, onclick: () => setCount(count + 1) }, '+')),
+          h('button', { type: 'button', class: 'btn icon small', 'aria-label': 'Más', disabled: count >= 12, onclick: () => setCount(count + 1) }, icon('plus'))),
         h('span', { class: 'hint' }, `${derived(m).hp || '?'} casillas por criatura`)) : null);
   }
 
@@ -225,9 +225,9 @@ export async function editorView(root, id) {
           h('div', { class: 'ability-head' },
             h('input', { class: 'input', value: a.name, placeholder: 'Nombre (p. ej. Infravisión)', oninput: e => { a.name = e.target.value; changed(); } }),
             h('button', { type: 'button', class: 'btn icon small', title: 'Subir', 'aria-label': 'Subir', disabled: i === 0,
-              onclick: () => { [m.abilities[i - 1], m.abilities[i]] = [m.abilities[i], m.abilities[i - 1]]; changed(true); } }, '↑'),
+              onclick: () => { [m.abilities[i - 1], m.abilities[i]] = [m.abilities[i], m.abilities[i - 1]]; changed(true); } }, icon('up')),
             h('button', { type: 'button', class: 'btn icon small danger', title: 'Quitar', 'aria-label': 'Quitar',
-              onclick: () => { m.abilities.splice(i, 1); changed(true); } }, '✕')),
+              onclick: () => { m.abilities.splice(i, 1); changed(true); } }, icon('x'))),
           h('textarea', { class: 'input', rows: 2, value: a.text, placeholder: 'Qué hace…', oninput: e => { a.text = e.target.value; changed(); } }))),
         h('button', { type: 'button', class: 'btn small', style: { alignSelf: 'flex-start' },
           onclick: () => { m.abilities.push({ name: '', text: '' }); changed(true); } }, '+ Habilidad especial')),
@@ -267,9 +267,9 @@ export async function editorView(root, id) {
   }
 
   root.append(
-    h('div', { class: 'toolbar' },
-      h('a', { class: 'btn', href: '#/' }, '← Bestiario'),
-      h('span', { class: 'grow' }, savedEl),
+    h('div', { class: 'toolbar editor-bar' },
+      h('a', { class: 'btn', href: '#/' }, icon('left'), 'Bestiario'),
+      h('span', { class: 'grow status' }, savedEl),
       h('button', { class: 'btn', onclick: duplicate }, 'Duplicar'),
       h('button', { class: 'btn danger', onclick: remove }, 'Borrar')),
     h('div', { class: 'editor' }, form, preview));

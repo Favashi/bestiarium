@@ -21,6 +21,19 @@ export function h(tag, attrs = {}, ...children) {
   return el;
 }
 
+const ICONS = {
+  minus: 'M3 8h10',
+  plus: 'M3 8h10M8 3v10',
+  up: 'M8 13.5V3M3.5 7.5 8 3l4.5 4.5',
+  left: 'M13.5 8H3M7.5 3.5 3 8l4.5 4.5',
+  right: 'M2.5 8H13M8.5 3.5 13 8l-4.5 4.5',
+  x: 'M4 4l8 8M12 4l-8 8',
+};
+/** Icono SVG centrado (los glifos −, +, ↑, ✕ quedaban descentrados con las fuentes de la app). */
+export function icon(name) {
+  return h('span', { class: 'ico', 'aria-hidden': 'true', html: `<svg viewBox="0 0 16 16"><path d="${ICONS[name]}"/></svg>` });
+}
+
 let toastTimer;
 export function toast(msg, ms = 2200) {
   const el = document.getElementById('toast');
@@ -95,7 +108,7 @@ export function dialog({ title, build, actions = [{ label: 'Cerrar', value: null
     const getValue = () => dlg._value;
     dlg.append(
       h('header', { class: 'dlg-head' }, h('h2', {}, title),
-        h('button', { type: 'button', class: 'dlg-x', 'aria-label': 'Cerrar', onclick: () => close(null) }, '✕')),
+        h('button', { type: 'button', class: 'dlg-x', 'aria-label': 'Cerrar', onclick: () => close(null) }, icon('x'))),
       body,
       h('footer', { class: 'dlg-foot' }, actions.map(a => h('button', {
         type: 'button', class: `btn${a.primary ? ' primary' : ''}${a.danger ? ' danger' : ''}`,
