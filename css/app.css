@@ -150,7 +150,11 @@ main { padding: 20px 16px; max-width: 1400px; margin: 0 auto; padding-bottom: ca
 }
 .input:focus { outline: none; background: #fff; box-shadow: inset 2px 2px 0 rgba(0, 0, 0, .06), 0 0 0 3px rgba(0, 0, 0, .15); }
 .input::placeholder { color: #9a9a9a; font-style: italic; }
-textarea.input { min-height: 64px; resize: vertical; line-height: 1.5; }
+textarea.input { min-height: 64px; resize: vertical; line-height: 1.5; overflow: hidden; }
+/* Selector que ocupa todo el ancho (alineamiento) */
+.seg-fill { display: flex; flex-wrap: nowrap; width: 100%; align-self: stretch !important; }
+.seg-fill button { flex: 1 1 0; min-width: 0; padding-inline: 6px; white-space: nowrap; }
+@media (max-width: 520px) { .grid2:has(.seg-fill) { grid-template-columns: minmax(0, 1fr); } }
 textarea.mono { font-family: "Courier New", ui-monospace, monospace; font-size: 13.5px; }
 select.input { appearance: none; -webkit-appearance: none; padding-right: 30px;
   background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%);

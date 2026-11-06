@@ -124,7 +124,7 @@ export async function editorView(root, id) {
 
   // ---------- secciones del formulario ----------
   function identity() {
-    const alignSeg = h('div', { class: 'seg' }, ALIGNMENTS.map(a => h('button', { type: 'button', class: m.alignment === a ? 'on' : '',
+    const alignSeg = h('div', { class: 'seg seg-fill' }, ALIGNMENTS.map(a => h('button', { type: 'button', class: m.alignment === a ? 'on' : '',
       onclick: () => { m.alignment = m.alignment === a ? '' : a; changed(true); } }, a)));
     const prev = h('div', { class: 'img-prev', style: m.image ? { backgroundImage: `url(${m.image})` } : {} });
     const upload = async () => {
@@ -246,8 +246,17 @@ export async function editorView(root, id) {
     const y = window.scrollY;
     autoRefs.length = 0;
     form.replaceChildren(pastePanel(), identity(), stats(), saves(), combat(), backSide());
+    form.querySelectorAll('textarea').forEach(growArea);
     window.scrollTo(0, y);
   }
+  // Las cajas de texto crecen con su contenido (en el móvil se cortaba el texto)
+  function growArea(ta) {
+    if (!ta.isConnected) return;
+    ta.style.height = 'auto';
+    if (ta.scrollHeight) ta.style.height = `${ta.scrollHeight + 4}px`;
+  }
+  form.addEventListener('input', e => { if (e.target.tagName === 'TEXTAREA') growArea(e.target); });
+  form.addEventListener('toggle', () => form.querySelectorAll('textarea').forEach(growArea), true);
 
   async function duplicate() {
     await save.flush();
@@ -276,7 +285,7 @@ export async function editorView(root, id) {
 
   renderForm();
   requestAnimationFrame(renderPreview);
-  const onResize = debounce(() => m && renderPreview(), 150);
+  const onResize = debounce(() => { if (!m) return; renderPreview(); form.querySelectorAll('textarea').forEach(growArea); }, 150);
   window.addEventListener('resize', onResize);
 
   return async () => {
